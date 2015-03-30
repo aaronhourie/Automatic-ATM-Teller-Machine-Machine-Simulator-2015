@@ -1,3 +1,21 @@
+ROADMAP and STATUS
+
+- Currency
+- User
+- Account
+	>- SavingsAccount
+	>- WithdrawableAccount
+		>>- ChequingAccount
+			>>>- Bill
+		>>- CreditAccount
+	>- Activity
+- Database
+	>- DB connectivity (10%)
+	>- MySQL DB implementation (50%)
+- GUI
+	>- ???
+
+
 Version 0.1
 ***********
 

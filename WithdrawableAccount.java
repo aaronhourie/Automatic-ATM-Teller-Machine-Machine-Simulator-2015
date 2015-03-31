@@ -1,11 +1,19 @@
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+public class WithdrawableAccount extends Account {
+=======
+>>>>>>> origin/master
 public class WithdrawableAccount {
+>>>>>>> Stashed changes
 	private int transactionLimit;
 	private int surcharge;
-	int numTransactions;
+	private int numTransactions;
 	
 	public WithdrawableAccount() {
 		//NICK, DATABASE
-		numTransactions = null;
+		super(null);
+		numTransactions = 0;
 	}
 	
 	public int getTransactionLimit() {
@@ -13,13 +21,15 @@ public class WithdrawableAccount {
 	}
 	
 	public void applySurcharge() {
-		if (numTransactions>transactionLimit) {
+		if (numTransactions > transactionLimit) {
 			//apply surcharge?
+			//Update DB
+			//numTransactions--;
 		}
 	}
 	
 	public boolean withdraw(int n) {
-		if (account.money > n) {
+		if (getBalance().getAmount() > n) {
 			//withdraw
 			return true;
 		}

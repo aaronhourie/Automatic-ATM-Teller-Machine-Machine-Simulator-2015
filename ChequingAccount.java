@@ -1,9 +1,15 @@
 import java.util.ArrayList;
-public class ChequingAccount {
+
+public class ChequingAccount extends WithdrawableAccount {
 	private ArrayList<Bill> bills = new ArrayList<Bill>();
 	
-	public boolean payBill(Bill b) {
-		if (account.funds > Bill.cost) {
+	public Bill addBill(String name, String account, int payment) {
+		//DB stuff
+		return new Bill(name, account, payment);
+	}
+
+	public boolean payBill(int i) {
+		if (getBalance().getAmount() > bills.get(i).getRegularPayment().getAmount()) {
 			//pay bill?
 			return true;
 		}
@@ -11,6 +17,6 @@ public class ChequingAccount {
 	}
 	
 	public Bill getBill(int n) {
-		return bills(n);
+		return bills.get(n);
 	}
 }

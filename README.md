@@ -10,11 +10,7 @@
 		<li>ChequingAccount<em>(??%)</em></li>
 		<li><strike>Bill<em>(100%)</em></strike></li>
 		<li>CreditAccount<em>(??%)</em></li>
-<<<<<<< HEAD
-		<li>Activity<em>(90%)</em></li>
-=======
 		<li><strike>Activity<em>(100%)</em></strike></li>
->>>>>>> origin/master
 	</ol></li>
 	
     <li><h2>Database</h2><ol>

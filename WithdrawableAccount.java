@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
 public class WithdrawableAccount extends Account {
-=======
->>>>>>> origin/master
-public class WithdrawableAccount {
->>>>>>> Stashed changes
 	private int transactionLimit;
 	private int surcharge;
 	private int numTransactions;

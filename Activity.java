@@ -1,27 +1,38 @@
-/** How are these initialized?
-			If the activity is created from an Account, it should have the current timestamp,
-			event determined by the calling function, and details supplied.
-			If the activity is created from a database (ie, for RecentActivity polls), the
-			timestamp must be pulled from the DB and converted to long, and the strings must
-			be pulled.
-		 **/
-
 import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.sql.*;
 
 public class Activity {
-	private Date date;
+	private Timestamp time;
+	private String account;
 	private String event;
 
-	/** Constructor for in-session creation **/
-	public Activity(Connection conn, String event) {
+	//Create an activity, send info to the DB
+	public Activity(String account, String event) {
+		Date date = new Date();
+		time = new Timestamp(date.getTime());
 		this.event = event;
-		this.date = new Date();
-		//Create timestamp, push to DB
-		Timestamp timestamp = new Timestamp(date.getTime());
+		this.account = account;
+		Connection conn = DB.connect();
+
+		try {
+			String sql = "INSERT INTO Activity VALUES(?,?,?)";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, account);
+			pstmt.setString(2, event);
+			pstmt.setTimestamp(3, time);
+			pstmt.executeUpdate();
+			pstmt.close();
+			conn.close();
+		} catch (SQLException se) {
+			se.printStackTrace();
+		}
+	}
+
+	public String toString() {
+		return time + "\nACCO#" + account + "\n" + event;
 	}
 }
-
 
 /*
 How will the activity class work?

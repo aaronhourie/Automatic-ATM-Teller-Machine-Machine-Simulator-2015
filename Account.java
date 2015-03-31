@@ -1,3 +1,8 @@
+import java.sql.*;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 /* Account Abstract Class.
  * What follows is information common to all types of bank 
  * accounts within the system. All other Account types are 
@@ -9,6 +14,7 @@ public abstract class Account {
 	private Currency balance;
 	private int withdrawLimit;
 	private double interest;
+	private ArrayList<Activity> activities;
 	
 	/* Constructor for use when creating new bank accounts.
 	 * balance is initialized to 0.
@@ -51,9 +57,26 @@ public abstract class Account {
 	 * This method hooks into the database to retrieve the recent transactions on
 	 * the current account. Returns it in a multi line string.
 	 */
-	public String getRecentActivity(){
-		// TODO: hook into database to retrieve recent activity.
-		return null;
+	public void printRecentActivity() {
+		Connection conn = DB.connect();
+		if (conn != null) {
+			try {
+				String sql = "SELECT * FROM Activity WHERE owner_account=? ORDER BY time DESC LIMIT 5";
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, accountNumber);
+				ResultSet rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					Date date = new Date(rs.getTimestamp("time").getTime());
+					SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
+					String event = rs.getString("details");
+					System.out.println(df.format(date) + " >> " + event);
+				}
+				conn.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
+		}
 	}
 	
 	// getters and setters.

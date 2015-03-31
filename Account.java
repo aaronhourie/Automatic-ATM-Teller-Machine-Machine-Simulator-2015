@@ -53,14 +53,81 @@ public abstract class Account {
 		}
 	}
 	
-	/* public String getRecentActivity
+	/** public Activity transaction(String details)
+	  *	Should be called inside every transaction
+	  * to ensure all affected DB data is properly
+	  *	updated.
+	  *	@return Activity record of the transaction
+	  **/
+	public Activity transaction(PreparedStatement query, String details) {
+		//Record time of transaction, prep Activity object
+		Date date = new Date();
+		Timestamp time = new Timestamp(date.getTime());
+		Activity activity = null;
+
+		//Establish a DB connection
+		Connection conn = DB.connect();
+
+		//On success, attempt to update the account
+		if (conn != null && query != null) {
+
+			PreparedStatement act = null;
+			try {
+				//Disable autocommit to allow batch processing
+				conn.setAutoCommit(false);
+				
+				//Create Activity information
+				act = conn.prepareStatement("INSERT INTO Activity VALUES(?,?,?)");
+				act.setString(1, accountNumber);
+				act.setString(2, details);
+				act.setTimestamp(3, time);
+
+				//Set Activity object for return
+				activity = new Activity(accountNumber, details, time);
+				
+				//Attempt DB push
+				act.executeUpdate();
+				query.executeUpdate();
+				conn.commit();
+			} catch (SQLException se) {
+				/* 
+				 * REMOVE THE STRACKTRACE FOR PRODUCTION!!!
+				 */
+				se.printStackTrace();
+				activity = new Activity(accountNumber, null, time);
+			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+					if (act != null) {
+						act.close();
+					}
+					if (query != null) {
+						query.close();
+					}
+				} catch (SQLException se2) {
+				}
+			}
+		}
+		return activity;
+	}
+
+	/* public String getRecentActivity()
 	 * This method hooks into the database to retrieve the recent transactions on
 	 * the current account. Returns it in a multi line string.
 	 */
-	public void printRecentActivity() {
+	public String getRecentActivity() {
+		//Prepare String for return
+		String recent = "";
+
+		//Connect to DB
 		Connection conn = DB.connect();
+
+		//On success, poll for recent activity
 		if (conn != null) {
 			try {
+				//Query returns five most recent activities
 				String sql = "SELECT * FROM Activity WHERE owner_account=? ORDER BY time DESC LIMIT 5";
 				PreparedStatement pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, accountNumber);
@@ -70,13 +137,22 @@ public abstract class Account {
 					Date date = new Date(rs.getTimestamp("time").getTime());
 					SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
 					String event = rs.getString("details");
-					System.out.println(df.format(date) + " >> " + event);
+					recent += df.format(date) + " >> " + event;
 				}
-				conn.close();
 			} catch (SQLException se) {
+				/**
+					REMOVE BEFORE PRODUCTION!!!
+				  **/
 				se.printStackTrace();
+				recent = "Error: could not retrieve recent activity";
+			} finally {
+				try {
+					conn.close();
+				} catch (SQLException se2) {
+				}
 			}
 		}
+		return recent;
 	}
 	
 	// getters and setters.

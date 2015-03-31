@@ -1,4 +1,3 @@
-
 public class WithdrawableAccount {
 	private int transactionLimit;
 	private int surcharge;

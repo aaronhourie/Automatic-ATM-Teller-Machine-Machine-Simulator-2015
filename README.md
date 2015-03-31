@@ -10,11 +10,11 @@
 		<li>ChequingAccount<em>(??%)</em></li>
 		<li>Bill<em>(??%)</em></li>
 		<li>CreditAccount<em>(??%)</em></li>
-		<li>Activity<em>(??%)</em></li>
+		<li>Activity<em>(90%)</em></li>
 	</ol></li>
 	
     <li><h2>Database</h2><ol>
-		<li>DB connectivity <em>(10%)</em></li>
+		<li>DB connectivity <em>(30%)</em></li>
 		<li>MySQL DB implementation <em>(50%)</em></li>
 	</ol></li>
 	

@@ -1,5 +1,3 @@
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.sql.*;
 
 public class Activity {
@@ -7,25 +5,13 @@ public class Activity {
 	private String account;
 	private String event;
 
-	//Create an activity, send info to the DB
-	public Activity(String account, String event) {
-		Date date = new Date();
-		time = new Timestamp(date.getTime());
-		this.event = event;
+	public Activity(String account, String event, Timestamp time) {
+		this.time = time;
 		this.account = account;
-		Connection conn = DB.connect();
-
-		try {
-			String sql = "INSERT INTO Activity VALUES(?,?,?)";
-			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, account);
-			pstmt.setString(2, event);
-			pstmt.setTimestamp(3, time);
-			pstmt.executeUpdate();
-			pstmt.close();
-			conn.close();
-		} catch (SQLException se) {
-			se.printStackTrace();
+		if (event == null) {
+			this.event = "There was an error and this transaction was halted";
+		} else {
+			this.event = event;
 		}
 	}
 
@@ -40,6 +26,4 @@ How will the activity class work?
 - It will be pulled from the DB whenever you access an Account
 - It will be added to the DB whenever it is generated
 - It will be read to the receipt when printed
-
-:: The Date object should be initialized from a java.sql.Timestamp
 */

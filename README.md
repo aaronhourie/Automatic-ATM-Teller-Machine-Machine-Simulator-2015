@@ -8,9 +8,9 @@
 		<li>SavingsAccount<em>(??%)</em></li>
 		<li>WithdrawableAccount<em>(??%)</em></li>
 		<li>ChequingAccount<em>(??%)</em></li>
-		<li>Bill<em>(??%)</em></li>
+		<li><strike>Bill<em>(100%)</em></strike></li>
 		<li>CreditAccount<em>(??%)</em></li>
-		<li>Activity<em>(??%)</em></li>
+		<li><strike>Activity<em>(100%)</em></strike></li>
 	</ol></li>
 	
     <li><h2>Database</h2><ol>

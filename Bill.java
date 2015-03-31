@@ -12,11 +12,11 @@ public class Bill {
 	}
 
 	public String getPayeeName() {
-		return name;
+		return payeeName;
 	}
 
 	public String getPayeeAccount() {
-		return account;
+		return payeeAccount;
 	}
 
 	public Currency getRegularPayment() {
@@ -33,5 +33,9 @@ public class Bill {
 
 	public void setRegularPayment(Currency payment) {
 		regularPayment = payment;
+	}
+
+	public String toString() {
+		return payeeName + "(" + regularPayment + ")"; 
 	}
 }

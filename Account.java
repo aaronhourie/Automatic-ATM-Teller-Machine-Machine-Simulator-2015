@@ -18,7 +18,7 @@ public abstract class Account {
 		
 		this.accountNumber = accountNumber;
 		// TODO: No-args constructor for currency should initialize value at 0.
-		this.balance = new Currency();
+		this.balance = new Currency(0);
 	}
 	
 	/* Constructor for use with pulling data from the database.
@@ -29,7 +29,7 @@ public abstract class Account {
 		
 		this.accountNumber = accountNumber;
 		// TODO: add a constructor to specify the amount in Currency.
-		this.balance = new Currency();
+		this.balance = new Currency(0);
 	}
 	
 	/* public void transfer(Account transferTo, Currency amount)

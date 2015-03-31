@@ -16,21 +16,9 @@ public abstract class Account {
 	private double interest;
 	private ArrayList<Activity> activities;
 	
-	/* Constructor for use when creating new bank accounts.
-	 * balance is initialized to 0.
-	 */
-	
-	public Account(String accountNumber){
-		
-		this.accountNumber = accountNumber;
-		// TODO: No-args constructor for currency should initialize value at 0.
-		this.balance = new Currency(0);
-	}
-	
 	/* Constructor for use with pulling data from the database.
 	 * Allows balance to be specified (should be done with a temporary currency object)
 	 */
-	
 	public Account(String accountNumber, Currency balance){
 		
 		this.accountNumber = accountNumber;

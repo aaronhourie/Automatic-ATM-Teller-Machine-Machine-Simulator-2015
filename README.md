@@ -2,7 +2,7 @@
 
 <ol>
 	<li><h2>Main classes:</h2><ol>
-		<li>Currency<em>(??%)</em></li>
+		<li>Currency<em>(90%)</em></li>
 		<li>User<em>(??%)</em></li>
 		<li>Account<em>(90%)</em></li>
 		<li>SavingsAccount<em>(??%)</em></li>
@@ -14,7 +14,18 @@
 	</ol></li>
 	
     <li><h2>Database</h2><ol>
-		<li>DB connectivity <em>(30%)</em></li>
+		<li>DB connectivity <em>(30%)</em>
+			<ol>
+				<li><strike>Transaction function</strike></li>
+				<li><strike>Get recent account activity</strike></li>
+				<li><strike>Add new bill to DB</strike></li>
+				<li>Populate Bills from DB</li>
+				<li>Populate account from DB</li>
+				<li>Deposit</li>
+				<li>Transfer</li>
+				<li>Withdraw</li>
+			</ol>
+		</li>
 		<li>MySQL DB implementation <em>(50%)</em></li>
 	</ol></li>
 	

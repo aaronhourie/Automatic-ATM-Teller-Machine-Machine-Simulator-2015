@@ -26,7 +26,7 @@
 				<li>Withdraw</li>
 			</ol>
 		</li>
-		<li>MySQL DB implementation <em>(50%)</em></li>
+		<li>MySQL DB implementation <em>(75%)</em></li>
 	</ol></li>
 	
 	<li><h2>GUI</h2><ol>

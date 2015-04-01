@@ -95,6 +95,7 @@ public abstract class Account {
 						query.close();
 					}
 				} catch (SQLException se2) {
+					//Do nothing
 				}
 			}
 		}

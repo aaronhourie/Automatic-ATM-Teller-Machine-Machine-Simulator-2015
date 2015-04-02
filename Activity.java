@@ -15,6 +15,14 @@ public class Activity {
 		}
 	}
 
+	public String getEvent() {
+		return event;
+	}
+
+	public void setEvent(String event) {
+		this.event = event;
+	}
+
 	public String toString() {
 		return time + "\nACCO#" + account + "\n" + event;
 	}

@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-public class WithdrawableAccount extends Account {
-=======
-public class WithdrawableAccount {
->>>>>>> Stashed changes
+public abstract class WithdrawableAccount extends Account {
 	private int transactionLimit;
 	private int surcharge;
 	private int numTransactions;

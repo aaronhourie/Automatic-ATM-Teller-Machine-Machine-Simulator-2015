@@ -24,8 +24,34 @@ public abstract class Account {
 		this.accountNumber = accountNumber;
 		// TODO: add a constructor to specify the amount in Currency.
 		this.balance = new Currency(0);
+		activities = new ArrayList<Activity>();
 	}
 	
+	/**
+	 * Deposit funds from ... I dunno?
+	 * @return Returns true if transaction completed successfully
+	 **/
+	public boolean deposit(double amount) {
+		//Convert amount argument to int, so it can be stored in DB
+		int balanceUpdate = Currency.parse(amount);
+
+		//Prepare query (PreparedStatement would require connection, so...)
+		String query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
+						+ " ) WHERE account_number='" + getaccountNumber() + "'";
+		String details = "Deposited $" + amount;
+
+		//Call transaction(), attempt to update DB, report on success
+		Activity action = transaction(query, details);
+		
+		//If transaction failed, update the Activity
+		if (action.getEvent().equals("")) {
+			action.setEvent("An error occurred; no funds were deposited");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	/* public void transfer(Account transferTo, Currency amount)
 	 * This method takes in an Account and transfers the amount in
 	 * a currency object from it's balance and sends it to the
@@ -41,13 +67,13 @@ public abstract class Account {
 		}
 	}
 	
-	/** public Activity transaction(String details)
+	 /** 
 	  *	Should be called inside every transaction
 	  * to ensure all affected DB data is properly
 	  *	updated.
 	  *	@return Activity record of the transaction
 	  **/
-	public Activity transaction(PreparedStatement query, String details) {
+	public Activity transaction(String query, String details) {
 		//Record time of transaction, prep Activity object
 		Date date = new Date();
 		Timestamp time = new Timestamp(date.getTime());
@@ -102,10 +128,11 @@ public abstract class Account {
 		return activity;
 	}
 
-	/* public String getRecentActivity()
+	/** 
 	 * This method hooks into the database to retrieve the recent transactions on
-	 * the current account. Returns it in a multi line string.
-	 */
+	 * the current account.
+	 * @return String of compiled activities
+	 **/
 	public String getRecentActivity() {
 		//Prepare String for return
 		String recent = "";
@@ -169,7 +196,4 @@ public abstract class Account {
 	public void setInterest(double interest) {
 		this.interest = interest;
 	}
-	
-	
-	
 }

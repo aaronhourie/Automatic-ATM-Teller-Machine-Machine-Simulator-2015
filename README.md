@@ -20,11 +20,11 @@
 				<li><strike>Get recent account activity</strike></li>
 				<li><strike>Add new bill to DB</strike></li>
 				<li>Populate Bills from DB</li>
-				<li>Populate account from DB</li>
+				<li><strike>Populate account from DB</strike></li>
 				<li><strike>Deposit</strike></li>
 				<li><strike>Transfer</strike></li>
 				<li>Withdraw</li>
-				<li>Login</li>
+				<li><strike>Login</strike></li>
 				<li>Logout</li>
 			</ol>
 		</li>

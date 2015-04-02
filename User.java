@@ -60,15 +60,6 @@ public class User
 		}
 	}
 
-	public String getId()
-	{
-		return id;
-	}
-
-	public SavingsAccount getSavingsAccount(int index) {
-		return savingsAccounts.get(index);
-	}
-
 	public static User login(String uname, String pword)
 	{
 		//If nothing supplied, auto-fail
@@ -110,4 +101,40 @@ public class User
 		}
 		return pullAccount;
 	}
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public SavingsAccount getSavingsAccount(int index) {
+		return savingsAccounts.get(index);
+	}
+	
+	public ChequingAccount getChequingAccount(int index) {
+		return chequingAccounts.get(index);
+	}
+
+	public CreditAccount getCreditAccount(int index) {
+		return creditAccounts.get(index);
+	}
+
+	public SavingsAccount[] getAllSavings() {
+		SavingsAccount[] accArray = new SavingsAccount[savingsAccounts.size()];
+		accArray = savingsAccounts.toArray(accArray);
+		return accArray;
+	}
+
+	public ChequingAccount[] getAllChequing() {
+		ChequingAccount[] accArray = new ChequingAccount[chequingAccounts.size()];
+		accArray = chequingAccounts.toArray(accArray);
+		return accArray;
+	}
+
+	public CreditAccount[] getAllCredit() {
+		CreditAccount[] accArray = new CreditAccount[creditAccounts.size()];
+		accArray = creditAccounts.toArray(accArray);
+		return accArray;
+	}
+
 }

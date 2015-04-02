@@ -4,8 +4,7 @@ public abstract class WithdrawableAccount extends Account {
 	private int numTransactions;
 	
 	public WithdrawableAccount() {
-		//NICK, DATABASE
-		super(null);
+		super(null, null);
 		numTransactions = 0;
 	}
 	

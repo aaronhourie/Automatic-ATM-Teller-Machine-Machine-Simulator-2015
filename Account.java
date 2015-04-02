@@ -37,7 +37,7 @@ public abstract class Account {
 
 		//Prepare query (PreparedStatement would require connection, so...)
 		String query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
-						+ " ) WHERE account_number='" + getaccountNumber() + "'";
+						+ " ) WHERE account_number='" + getAccountNumber() + "'";
 		String details = "Deposited $" + amount;
 
 		//Call transaction(), attempt to update DB, report on success
@@ -69,7 +69,7 @@ public abstract class Account {
 		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
 			//Prepare query for removal from origin account 
 			String query = "UPDATE Account SET balance=(balance + " + (-balanceUpdate) 
-						+ " ) WHERE account_number='" + getaccountNumber() + "'";
+						+ " ) WHERE account_number='" + getAccountNumber() + "'";
 			String details = "Transferred $" + amount + " to ACCO#" + transferTo;
 			
 			//Call transaction(), attempt to update DB, report on success
@@ -81,8 +81,8 @@ public abstract class Account {
 
 				//Prepare query for addition to target account
 				query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
-							+ " ) WHERE account_number='" + getaccountNumber() + "'";
-				details = "Deposited $" + amount + " from ACCO#:" + getaccountNumber();
+							+ " ) WHERE account_number='" + getAccountNumber() + "'";
+				details = "Deposited $" + amount + " from ACCO#:" + getAccountNumber();
 
 				//Push to DB, hope for the best!
 				transaction(query, details);
@@ -202,10 +202,10 @@ public abstract class Account {
 	}
 	
 	// getters and setters.
-	public String getaccountNumber() {
+	public String getAccountNumber() {
 		return accountNumber;
 	}
-	public void setaccountNumber(String accountNumber) {
+	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 	public Currency getBalance() {

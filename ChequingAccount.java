@@ -26,7 +26,7 @@ public class ChequingAccount extends WithdrawableAccount {
 				add.setString(1, name);
 				add.setString(2, account);
 				add.setInt(3, payment);
-				add.setString(4, getaccountNumber());
+				add.setString(4, getAccountNumber());
 
 				//Push to DB
 				add.executeUpdate();
@@ -39,14 +39,6 @@ public class ChequingAccount extends WithdrawableAccount {
 				**/
 				se.printStackTrace();
 			} finally {
-				try {
-					if (add != null) {
-						add.close();
-					}
-					if (conn != null) {
-						conn.close();
-					}
-				}
 			}
 		}
 		return bill;

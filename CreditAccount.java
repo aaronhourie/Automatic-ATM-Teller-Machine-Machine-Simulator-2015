@@ -1,9 +1,8 @@
-
 public class CreditAccount {
-	Private Currency creditLimit;
+	private Currency creditLimit;
 	
 	public boolean applyForIncrease() {
-		
+		return false;
 	}
 	
 	public Currency getCreditLimit() {

@@ -28,7 +28,7 @@
 				<li>Logout</li>
 			</ol>
 		</li>
-		<li>MySQL DB implementation <em>(50%)</em></li>
+		<li><strike>MySQL DB implementation <em>(100%)</em></strike></li>
 	</ol></li>
 	
 	<li><h2>GUI</h2><ol>

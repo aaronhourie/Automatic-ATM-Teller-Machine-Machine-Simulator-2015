@@ -2,13 +2,27 @@ import java.util.ArrayList;
 import java.sql.*;
 
 public class ChequingAccount extends WithdrawableAccount {
-	private ArrayList<Bill> bills = new ArrayList<Bill>();
+	private ArrayList<Bill> bills;
+	private int transactionLimit;
+	private int numTransactions;
+	private int surcharge;
 	
 	/** public Bill addBill(String name, String account, int payment)
 	 ** Creates a Bill object, stores it in the user's DB, and adds
 	 ** to open Bill arraylist.
 	 ** @return Bill object
 	 **/
+
+	public ChequingAccount(String accountNumber, String accountType, Currency balance,
+					double interest, int transactionLimit, int withdrawLimit, int surcharge,
+					int numTransactions) {
+		super(accountNumber, accountType, balance, interest, withdrawLimit);
+		this.transactionLimit = transactionLimit;
+		this.numTransactions = numTransactions;
+		this.surcharge = surcharge;
+		bills = new ArrayList<Bill>();
+	}
+
 	public Bill addBill(String name, String account, int payment) {
 		//Prep Bill object for return
 		Bill bill = null;
@@ -42,6 +56,14 @@ public class ChequingAccount extends WithdrawableAccount {
 			}
 		}
 		return bill;
+	}
+
+	public void applySurcharge() {
+		if (numTransactions > transactionLimit) {
+			//apply surcharge?
+			//Update DB
+			//numTransactions--;
+		}
 	}
 
 	public boolean payBill(int i) {

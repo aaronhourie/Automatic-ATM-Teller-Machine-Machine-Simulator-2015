@@ -1,23 +1,10 @@
 public abstract class WithdrawableAccount extends Account {
-	private int transactionLimit;
-	private int surcharge;
-	private int numTransactions;
+	private int withdrawLimit;
 	
-	public WithdrawableAccount() {
-		super(null, null);
-		numTransactions = 0;
-	}
-	
-	public int getTransactionLimit() {
-		return transactionLimit;
-	}
-	
-	public void applySurcharge() {
-		if (numTransactions > transactionLimit) {
-			//apply surcharge?
-			//Update DB
-			//numTransactions--;
-		}
+	public WithdrawableAccount(String accountNumber, String accountType, Currency balance,
+					double interest, int withdrawLimit) {
+		super(accountNumber, accountType, balance, interest);
+		this.withdrawLimit = withdrawLimit;
 	}
 	
 	public boolean withdraw(int n) {

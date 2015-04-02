@@ -13,18 +13,19 @@ public abstract class Account {
 	private String accountNumber;
 	private String accountType;
 	private Currency balance;
-	private int withdrawLimit;
 	private double interest;
 	private ArrayList<Activity> activities;
 	
 	/* Constructor for use with pulling data from the database.
 	 * Allows balance to be specified (should be done with a temporary currency object)
 	 */
-	public Account(String accountNumber, Currency balance){
+	public Account(String accountNumber, String accountType, Currency balance,
+					double interest) {
 		
 		this.accountNumber = accountNumber;
-		// TODO: add a constructor to specify the amount in Currency.
-		this.balance = new Currency(0);
+		this.accountType = accountType;
+		this.balance = balance;
+		this.interest = interest;
 		activities = new ArrayList<Activity>();
 	}
 	
@@ -214,12 +215,6 @@ public abstract class Account {
 	}
 	public void setBalance(Currency balance) {
 		this.balance = balance;
-	}
-	public int getWithdrawLimit() {
-		return withdrawLimit;
-	}
-	public void setWithdrawLimit(int withdrawLimit) {
-		this.withdrawLimit = withdrawLimit;
 	}
 	public double getInterest() {
 		return interest;

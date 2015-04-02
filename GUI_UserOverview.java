@@ -54,7 +54,7 @@ public class GUI_UserOverview extends GUI_ViewPort{
 			
 			index --;
 		}
-		else if (index < data.length) {
+		else if (direction.equals("DOWN") && index < data.length) {
 			
 			index ++;
 		}

@@ -10,14 +10,12 @@ public class GUI_EnterPin extends GUI_ViewPort{
 	private JLabel lbl_pin;
 	private JLabel lbl_user;
 	
-	public GUI_EnterPin(String title, String u_id, GUI_Main ref) {
+	public GUI_EnterPin(String title, String error, GUI_Main ref) {
 		
-		super(title, u_id, ref);
-		
+		super(title, error, ref);
 		
 		container = new JPanel();
 		add(container, BorderLayout.CENTER);
-		
 		
 		lbl_user = new JLabel("Please type your User Number:");
 		userInput = new JTextField(20);

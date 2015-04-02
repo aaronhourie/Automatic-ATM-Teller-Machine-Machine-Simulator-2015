@@ -29,7 +29,7 @@ public class GUI_ButtonPad extends JPanel{
 			buttons.add(new JButton(""+i));
 		}
 		// creates control buttons
-		buttons.add(new JButton("*"));
+		buttons.add(new JButton("."));
 		buttons.add(new JButton("0"));
 		buttons.add(new JButton("#"));
 		buttons.add(new JButton("SELECT"));

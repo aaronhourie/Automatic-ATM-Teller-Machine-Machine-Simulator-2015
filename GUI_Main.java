@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.*;
 class GUI_Main extends JFrame{
 	
@@ -8,8 +7,7 @@ class GUI_Main extends JFrame{
 	//private User currentUser = new User();
 	private final int WINDOW_WIDTH = 900;
 	private final int WINDOW_HEIGHT = 400;
-	
-	
+
 	public static void main(String[] args){
 		
 		new GUI_Main();
@@ -31,7 +29,9 @@ class GUI_Main extends JFrame{
 	}
 	private void buildPanels(){
 		
-		mainPanel = new GUI_EnterPin("Enter PIN:","", this);
+		//mainPanel = new GUI_EnterPin("Enter PIN:","", this);
+		//mainPanel = new GUI_Withdraw("Withdraw:", "", this);
+		mainPanel = new GUI_AccountOverview("Account Overview:", "", this);
 		mainPanel.setSize(WINDOW_WIDTH/2, WINDOW_HEIGHT);
 		
 			

@@ -21,8 +21,8 @@
 				<li><strike>Add new bill to DB</strike></li>
 				<li>Populate Bills from DB</li>
 				<li>Populate account from DB</li>
-				<li>Deposit</li>
-				<li>Transfer</li>
+				<li><strike>Deposit</strike></li>
+				<li><strike>Transfer</strike></li>
 				<li>Withdraw</li>
 				<li>Login</li>
 				<li>Logout</li>

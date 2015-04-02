@@ -43,28 +43,54 @@ public abstract class Account {
 		//Call transaction(), attempt to update DB, report on success
 		Activity action = transaction(query, details);
 		
-		//If transaction failed, update the Activity
-		if (action.getEvent().equals("")) {
-			action.setEvent("An error occurred; no funds were deposited");
-			return false;
+		//On success, update balance
+		if (action.wasSuccessful()) {
+			balance.add(new Currency(balanceUpdate));
 		} else {
-			return true;
+			action.setEvent("An error occurred; no funds were deposited");
 		}
+
+		//Return succeed and make record
+		activities.add(action);
+		return action.wasSuccessful();
 	}
 
-	/* public void transfer(Account transferTo, Currency amount)
+	/**
 	 * This method takes in an Account and transfers the amount in
 	 * a currency object from it's balance and sends it to the
 	 * transferTo account.
-	 */
-	public void transfer(Account transferTo, Currency amount){
-		// error checking to prevent stealing funds.
-		if (amount.getAmount() > 0){
-			// subtracts from own funds.
-			balance.subtract(amount);
-			// adds to other account.
-			transferTo.getBalance().add(amount);
+	 * @return Returns true on transfer success
+	 **/
+	public boolean transfer(Account transferTo, double amount) {
+		//Convert amount argument to int, so it can be stored in DB
+		int balanceUpdate = Currency.parse(amount);
+
+		//Prevent negative values and values greater than account balance
+		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
+			//Prepare query for removal from origin account 
+			String query = "UPDATE Account SET balance=(balance + " + (-balanceUpdate) 
+						+ " ) WHERE account_number='" + getaccountNumber() + "'";
+			String details = "Transferred $" + amount + " to ACCO#" + transferTo;
+			
+			//Call transaction(), attempt to update DB, report on success
+			Activity action = transaction(query, details);
+
+			//On success, update balance and deposit into target account
+			if (action.wasSuccessful()) {
+				balance.subtract(new Currency(balanceUpdate));
+
+				//Prepare query for addition to target account
+				query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
+							+ " ) WHERE account_number='" + getaccountNumber() + "'";
+				details = "Deposited $" + amount + " from ACCO#:" + getaccountNumber();
+
+				//Push to DB, hope for the best!
+				transaction(query, details);
+			} else {
+				action.setEvent("An error occurred; transfer was not completed");
+			}
 		}
+		return true;
 	}
 	
 	 /** 
@@ -86,9 +112,13 @@ public abstract class Account {
 		if (conn != null && query != null) {
 
 			PreparedStatement act = null;
+			PreparedStatement update = null;
 			try {
 				//Disable autocommit to allow batch processing
 				conn.setAutoCommit(false);
+
+				//Prepare query from base action
+				update = conn.prepareStatement(query);
 				
 				//Create Activity information
 				act = conn.prepareStatement("INSERT INTO Activity VALUES(?,?,?)");
@@ -101,7 +131,7 @@ public abstract class Account {
 				
 				//Attempt DB push
 				act.executeUpdate();
-				query.executeUpdate();
+				update.executeUpdate();
 				conn.commit();
 			} catch (SQLException se) {
 				/* 
@@ -117,8 +147,8 @@ public abstract class Account {
 					if (act != null) {
 						act.close();
 					}
-					if (query != null) {
-						query.close();
+					if (update != null) {
+						update.close();
 					}
 				} catch (SQLException se2) {
 					//Do nothing

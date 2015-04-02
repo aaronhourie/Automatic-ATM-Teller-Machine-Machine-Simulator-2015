@@ -2,7 +2,7 @@ import java.sql.*;
 public class DB {
 
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://192.168.2.25:3306/Cs2";
+	static final String DB_URL = "jdbc:mysql://142.167.136.228:3306/Cs2";
 
 	static final String USER = "java";
 	static final String PASS = "csci1101";

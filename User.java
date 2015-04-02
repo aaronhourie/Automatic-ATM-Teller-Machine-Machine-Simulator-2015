@@ -48,6 +48,7 @@ public class User
 							case 1: //Savings
 								accountType = "Savings";
 								accounts.add(new SavingsAccount(accountNumber, accountType, balance, interest));
+								break;
 								/*
 								savingsAccounts.add(new SavingsAccount(accountNumber, accountType, balance, interest));
 								*/
@@ -55,6 +56,7 @@ public class User
 								accountType = "Chequing";
 								accounts.add(new ChequingAccount(accountNumber, accountType, balance, interest, 
 														transactionLimit, withdrawLimit, surcharge, numTransactions));
+								break;
 								/*
 								chequingAccounts.add(new ChequingAccount(accountNumber, accountType, balance, interest, 
 														transactionLimit, withdrawLimit, surcharge, numTransactions));
@@ -63,6 +65,7 @@ public class User
 								accountType = "Credit";
 								accounts.add(new CreditAccount(accountNumber, accountType, balance, interest, 
 														withdrawLimit, creditLimit));
+								break;
 								/*
 								creditAccounts.add(new CreditAccount(accountNumber, accountType, balance, interest, 
 														withdrawLimit, creditLimit));

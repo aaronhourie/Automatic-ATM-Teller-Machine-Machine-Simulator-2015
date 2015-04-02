@@ -1,10 +1,11 @@
 import javax.swing.*;
+
 import java.awt.*;
 class GUI_Main extends JFrame{
 	
 	private GUI_ViewPort mainPanel;
 	private GUI_ButtonPad buttonPad;
-	//private User currentUser = new User();
+	private User currentUser;
 	private final int WINDOW_WIDTH = 900;
 	private final int WINDOW_HEIGHT = 400;
 
@@ -15,6 +16,7 @@ class GUI_Main extends JFrame{
 	
 	public GUI_Main(){
 		
+		currentUser = null;
 		setTitle("ATM Simulator 2015");
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,11 +31,8 @@ class GUI_Main extends JFrame{
 	}
 	private void buildPanels(){
 		
-		//mainPanel = new GUI_EnterPin("Enter PIN:","", this);
-		//mainPanel = new GUI_Withdraw("Withdraw:", "", this);
-		mainPanel = new GUI_AccountOverview("Account Overview:", "", this);
+		mainPanel = new GUI_EnterPin("Enter PIN:","", this);
 		mainPanel.setSize(WINDOW_WIDTH/2, WINDOW_HEIGHT);
-		
 			
 		buttonPad = new GUI_ButtonPad(mainPanel);
 		buttonPad.setSize(WINDOW_WIDTH/2, WINDOW_HEIGHT);
@@ -53,5 +52,11 @@ class GUI_Main extends JFrame{
 		repaint();
 		// cascades changes to buttonPad
 		buttonPad.changeViewPort(newView);
+	}
+	public User getUser(){
+		return currentUser;
+	}
+	public void setUser(User user){
+		currentUser = user;
 	}
 }

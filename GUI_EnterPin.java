@@ -66,8 +66,12 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		// This handles validation and changing panels.
 		// The value should be read from the pinInput as is.
 		
-		// TODO: pull from database here.
-		if (!pinInput.getText().equals("1234")) {
+		String userId = userInput.getText();
+		String pin = pinInput.getText();
+		
+		boolean success = User.login(userId, pin) == null;
+		
+		if (success) {
 		
 			ref.changeViewPort(new GUI_UserOverview("User Overview:", "", ref));
 		}

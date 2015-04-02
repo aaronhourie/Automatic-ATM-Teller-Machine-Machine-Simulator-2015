@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public abstract class Account {
 
 	private String accountNumber;
+	private String accountType;
 	private Currency balance;
 	private int withdrawLimit;
 	private double interest;

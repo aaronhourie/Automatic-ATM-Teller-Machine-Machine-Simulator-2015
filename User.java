@@ -4,31 +4,31 @@ import java.sql.*;
 public class User 
 {
 	private String id;
-	private String pin;
-	private ArrayList<CreditAccount> creditAccounts;
-	private ArrayList<SavingsAccount> savingsAccounts;
-	private ArrayList<ChequingAccount> chequingAccount;
+	private ArrayList<CreditAccount> creditAccounts; //Type 1
+	private ArrayList<SavingsAccount> savingsAccounts; //Type 2
+	private ArrayList<ChequingAccount> chequingAccount; //Type 3
 	
-	public User()
-	{
+	public User() {
 		id = null;
-		pin = null;
 	}
+
 	public String getId()
 	{
 		return id;
 	}
+
 	public Account getAccount(Account a)
 	{
 		//find their account and return?
 		//change arguments?
 		return a;
 	}
-	public boolean login(String uname, String pword)
+
+	public static User login(String uname, String pword)
 	{
 		//If nothing supplied, auto-fail
 		if (uname == "" || pword == "") {
-			return false;
+			return null;
 		}
 
 		//Connect to DB

@@ -4,15 +4,21 @@ import java.sql.*;
 public class User 
 {
 	private String id;
+	private ArrayList<Account> accounts;
+	/*
 	private ArrayList<CreditAccount> creditAccounts; //Type 1
 	private ArrayList<SavingsAccount> savingsAccounts; //Type 2
 	private ArrayList<ChequingAccount> chequingAccounts; //Type 3
+	*/
 	
 	public User(String id) {
 		this.id = id;
+		accounts = new ArrayList<Account>();
+		/*
 		creditAccounts = new ArrayList<CreditAccount>();
 		savingsAccounts = new ArrayList<SavingsAccount>();
 		chequingAccounts = new ArrayList<ChequingAccount>();
+		*/
 
 		//Attempt DB connection
 		Connection conn = DB.connect();
@@ -41,15 +47,26 @@ public class User
 						switch (rs.getInt("type")) {
 							case 1: //Savings
 								accountType = "Savings";
+								accounts.add(new SavingsAccount(accountNumber, accountType, balance, interest));
+								/*
 								savingsAccounts.add(new SavingsAccount(accountNumber, accountType, balance, interest));
+								*/
 							case 2: //Chequing
 								accountType = "Chequing";
+								accounts.add(new ChequingAccount(accountNumber, accountType, balance, interest, 
+														transactionLimit, withdrawLimit, surcharge, numTransactions));
+								/*
 								chequingAccounts.add(new ChequingAccount(accountNumber, accountType, balance, interest, 
 														transactionLimit, withdrawLimit, surcharge, numTransactions));
+								*/
 							case 3: //Credit
 								accountType = "Credit";
+								accounts.add(new CreditAccount(accountNumber, accountType, balance, interest, 
+														withdrawLimit, creditLimit));
+								/*
 								creditAccounts.add(new CreditAccount(accountNumber, accountType, balance, interest, 
 														withdrawLimit, creditLimit));
+								*/
 							default: break;
 						}
 					} while (rs.next());
@@ -107,6 +124,7 @@ public class User
 		return id;
 	}
 
+/*
 	public SavingsAccount getSavingsAccount(int index) {
 		return savingsAccounts.get(index);
 	}
@@ -118,7 +136,18 @@ public class User
 	public CreditAccount getCreditAccount(int index) {
 		return creditAccounts.get(index);
 	}
+*/
 
+	public Account getAccount(int index) {
+		return accounts.get(index);
+	}
+
+	public Account[] getAllAccounts() {
+		Account[] accArray = new Account[accounts.size()];
+		accArray = accounts.toArray(accArray);
+		return accArray;
+	}
+/*
 	public SavingsAccount[] getAllSavings() {
 		SavingsAccount[] accArray = new SavingsAccount[savingsAccounts.size()];
 		accArray = savingsAccounts.toArray(accArray);
@@ -136,5 +165,5 @@ public class User
 		accArray = creditAccounts.toArray(accArray);
 		return accArray;
 	}
-
+*/
 }

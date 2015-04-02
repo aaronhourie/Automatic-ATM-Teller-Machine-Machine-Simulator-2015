@@ -222,4 +222,8 @@ public abstract class Account {
 	public void setInterest(double interest) {
 		this.interest = interest;
 	}
+
+	public String toString() {
+		return "ACCO#" + accountNumber + "\tBalance: " + balance;
+	}
 }

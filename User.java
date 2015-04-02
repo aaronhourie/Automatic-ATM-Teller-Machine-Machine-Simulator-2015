@@ -65,11 +65,8 @@ public class User
 		return id;
 	}
 
-	public Account getAccount(Account a)
-	{
-		//find their account and return?
-		//change arguments?
-		return a;
+	public SavingsAccount getSavingsAccount(int index) {
+		return savingsAccounts.get(index);
 	}
 
 	public static User login(String uname, String pword)

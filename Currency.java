@@ -12,12 +12,6 @@ public class Currency implements ICurrency
 		return (int)(value * 100.00);
 	}
 
-	@Override
-	public int getAmount()
-	{
-		return amount;
-	}
-
 	@Override //Converts amount into $12.34 format
 	public String toString() {
 		int dollars = (int) Math.floor(amount / 100);
@@ -48,5 +42,11 @@ public class Currency implements ICurrency
 	public void interest(double rate) 
 	{
 		amount += amount * (int)(rate / 100.00);
+	}
+
+	@Override
+	public int getAmount()
+	{
+		return amount;
 	}
 }

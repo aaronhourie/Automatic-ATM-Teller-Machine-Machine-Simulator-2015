@@ -143,17 +143,18 @@ public abstract class Account {
 				activity = new Activity(accountNumber, null, time);
 			} finally {
 				try {
-					if (conn != null) {
-						conn.close();
-					}
 					if (act != null) {
 						act.close();
 					}
 					if (update != null) {
 						update.close();
 					}
+					if (conn != null) {
+						conn.close();
+					}
 				} catch (SQLException se2) {
-					//Do nothing
+					System.out.println("Error while attempting to close MySQL objects");
+					se2.printStackTrace();
 				}
 			}
 		}
@@ -244,6 +245,6 @@ public abstract class Account {
 	}
 
 	public String toString() {
-		return "ACCO#" + accountNumber + "\tBalance: " + balance;
+		return "ACCO#" + accountNumber + " Balance: " + balance;
 	}
 }

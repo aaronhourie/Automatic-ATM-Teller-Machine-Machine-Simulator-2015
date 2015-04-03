@@ -6,7 +6,7 @@
 		</ol></li>
 
 	<li><h2>Main classes:</h2><ol>
-		<li>Currency<em>(90%)</em></li>
+		<li><strike>Currency<em>(100%)</em></strike></li>
 		<li>User<em>(80%)</em></li>
 		<li>Account<em>(90%)</em></li>
 		<li><strike>SavingsAccount<em>(100%)</em></strike></li>

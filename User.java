@@ -1,9 +1,11 @@
 import java.util.ArrayList;
+import java.util.Date;
 import java.sql.*;
 
 public class User {
 	private String id;
 	private ArrayList<Account> accounts;
+	private Timestamp loginTime;
 	
 	/**
 	 * User objects are only constructed inside the User::login method.
@@ -13,6 +15,8 @@ public class User {
 	 **/
 	public User(String id) {
 		this.id = id;
+		Date date = new Date();
+		loginTime = new Timestamp(date.getTime());
 		accounts = new ArrayList<Account>();
 
 		//Attempt DB connection

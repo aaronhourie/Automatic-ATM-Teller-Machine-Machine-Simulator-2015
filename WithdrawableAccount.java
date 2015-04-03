@@ -1,10 +1,10 @@
 public abstract class WithdrawableAccount extends Account {
-	private int withdrawLimit;
+	private Currency withdrawLimit;
 	
 	public WithdrawableAccount(String accountNumber, String accountType, Currency balance,
 					double interest, int withdrawLimit) {
 		super(accountNumber, accountType, balance, interest);
-		this.withdrawLimit = withdrawLimit;
+		this.withdrawLimit = new Currency(withdrawLimit);
 	}
 
 	/**
@@ -15,8 +15,9 @@ public abstract class WithdrawableAccount extends Account {
 		//Convert amount argument to int, so it can be stored in DB
 		int balanceUpdate = Currency.parse(amount);
 
-		//Only allow if funds are available
-		if (amount > 0 && getBalance().getAmount() >= amount) {
+		//Only allow if funds are available, and amount does not exceed withdraw limit
+		if (amount > 0 && getBalance().getAmount() >= amount
+				&& amount <= withdrawLimit.getAmount()) {
 			//Prepare query (PreparedStatement would require connection, so...)
 			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
 							+ " ) WHERE account_number='" + getAccountNumber() + "'";
@@ -38,5 +39,9 @@ public abstract class WithdrawableAccount extends Account {
 		} else {
 			return false;
 		}
-	}	
+	}
+
+	public Currency getWithdrawLimit() {
+		return withdrawLimit;
+	}
 }

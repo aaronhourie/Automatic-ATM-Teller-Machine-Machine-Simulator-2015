@@ -8,7 +8,7 @@ public class ChequingAccount extends WithdrawableAccount {
 	private int surcharge;
 
 	public ChequingAccount(String accountNumber, String accountType, Currency balance,
-					double interest, int transactionLimit, int withdrawLimit, int surcharge,
+					double interest, int withdrawLimit, int transactionLimit, int surcharge,
 					int numTransactions) {
 		super(accountNumber, accountType, balance, interest, withdrawLimit);
 		this.transactionLimit = transactionLimit;
@@ -66,6 +66,18 @@ public class ChequingAccount extends WithdrawableAccount {
 	}
 
 	/**
+	 * Checks if a surcharge is necessary
+	 * @return Returns surcharge or 0 if no surcharge required
+	 **/
+	private double addSurcharge() {
+		if (numTransactions >= transactionLimit) {
+			return surcharge;
+		} else {
+			return 0.0;
+		}
+	}
+
+	/**
 	 * Specialized for Chequing accounts, as they have
 	 * a surcharge after a max number of transactions
 	 * are completed.
@@ -81,18 +93,6 @@ public class ChequingAccount extends WithdrawableAccount {
 			return true;
 		} else {
 			return false;
-		}
-	}
-
-	/**
-	 * Checks if a surcharge is necessary
-	 * @return Returns surcharge or 0 if no surcharge required
-	 **/
-	public double addSurcharge() {
-		if (numTransactions >= transactionLimit) {
-			return surcharge;
-		} else {
-			return 0.0;
 		}
 	}
 

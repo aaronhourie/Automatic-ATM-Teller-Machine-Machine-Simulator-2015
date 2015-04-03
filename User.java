@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.sql.*;
+import java.io.*;
 
 public class User {
 	private String id;
@@ -139,6 +141,34 @@ public class User {
 			}
 		}
 		return pullAccount;
+	}
+
+	public void logout() {
+		printReceipt();	
+	}
+
+	public void printReceipt() {
+		//Create or rewrite a file in PWD
+		try {
+			PrintWriter out = new PrintWriter("receipt.txt");
+
+			//Write login time
+			SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
+			out.println(df.format(loginTime));
+			out.println("\n\n");
+
+			//Write all activities
+			for (Account acc : accounts) {
+				for (Activity activ : acc.getActivities()) {
+					out.println(activ);
+				}
+			}
+			
+			//Terminate connection with file
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getId()

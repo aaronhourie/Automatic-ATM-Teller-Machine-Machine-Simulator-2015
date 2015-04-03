@@ -2,16 +2,17 @@ public class Currency implements ICurrency
 {
 	private int amount;
 
-	//To convert user input into storable values
-	public static int parse(double value) {
-		return (int)(value * 100.00);
-	}
-
 	public Currency(int amount) 
 	{	
 		this.amount = amount;
 	}
 
+	//Converts user input into storable values
+	public static int parse(double value) {
+		return (int)(value * 100.00);
+	}
+
+	@Override
 	public int getAmount()
 	{
 		return amount;
@@ -46,6 +47,6 @@ public class Currency implements ICurrency
 	@Override
 	public void interest(double rate) 
 	{
-		amount += (int)(amount*(rate/100));
+		amount += amount * (int)(rate / 100.00);
 	}
 }

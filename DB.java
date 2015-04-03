@@ -7,13 +7,18 @@ public class DB {
 	static final String USER = "java";
 	static final String PASS = "csci1101";
 
+	/**
+	 * A safe way to establish DB connections anywheres.
+	 * Remember to close the connection!
+	 * @return Connection object to MySQL server
+	 **/
 	public static Connection connect() {
 		Connection conn = null;
 
 		try {
 			Class.forName(JDBC_DRIVER);
-			System.out.println("Connecting to db...");
 			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			System.out.println("Established connection with DB");
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {

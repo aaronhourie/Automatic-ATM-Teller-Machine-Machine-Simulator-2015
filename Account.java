@@ -9,16 +9,12 @@ import java.util.ArrayList;
  * inherited from this class.
  */
 public abstract class Account {
-
 	private String accountNumber;
 	private String accountType;
 	private Currency balance;
 	private double interest;
 	private ArrayList<Activity> activities;
 	
-	/* Constructor for use with pulling data from the database.
-	 * Allows balance to be specified (should be done with a temporary currency object)
-	 */
 	public Account(String accountNumber, String accountType, Currency balance,
 					double interest) {
 		
@@ -136,15 +132,13 @@ public abstract class Account {
 				//Set Activity object for return
 				activity = new Activity(accountNumber, details, time);
 				
-				//Attempt DB push
+				//Attempt mega DB push
 				act.executeUpdate();
 				update.executeUpdate();
 				addTrans.executeUpdate();
 				conn.commit();
 			} catch (SQLException se) {
-				/* 
-				 * REMOVE THE STRACKTRACE FOR PRODUCTION!!!
-				 */
+				System.out.println("Error while attempting to write to database");
 				se.printStackTrace();
 				activity = new Activity(accountNumber, null, time);
 			} finally {
@@ -172,21 +166,23 @@ public abstract class Account {
 	 * @return String of compiled activities
 	 **/
 	public String getRecentActivity() {
-		//Prepare String for return
+		//Prepare return string
 		String recent = "";
 
 		//Connect to DB
 		Connection conn = DB.connect();
 
 		//On success, poll for recent activity
+		PreparedStatement getAct = null;
 		if (conn != null) {
 			try {
 				//Query returns five most recent activities
 				String sql = "SELECT * FROM Activity WHERE owner_account=? ORDER BY time DESC LIMIT 5";
-				PreparedStatement pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, accountNumber);
-				ResultSet rs = pstmt.executeQuery();
+				getAct = conn.prepareStatement(sql);
+				getAct.setString(1, accountNumber);
+				ResultSet rs = getAct.executeQuery();
 
+				//Format and add all results to return string
 				while (rs.next()) {
 					Date date = new Date(rs.getTimestamp("time").getTime());
 					SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
@@ -194,15 +190,20 @@ public abstract class Account {
 					recent += df.format(date) + " >> " + event;
 				}
 			} catch (SQLException se) {
-				/**
-					REMOVE BEFORE PRODUCTION!!!
-				  **/
+				System.out.println("Error while attempting to write to database");
 				se.printStackTrace();
 				recent = "Error: could not retrieve recent activity";
 			} finally {
 				try {
-					conn.close();
+					if (getAct != null) {
+						getAct.close();
+					}
+					if (conn != null) {
+						conn.close();
+					}
 				} catch (SQLException se2) {
+					System.out.println("Error while attempting to close MySQL objects");
+					se2.printStackTrace();
 				}
 			}
 		}
@@ -210,32 +211,32 @@ public abstract class Account {
 	}
 	
 	// getters and setters.
-	public String getAccountType() {
-		return accountType;
-	}
-
 	public String getAccountNumber() {
 		return accountNumber;
+	}
+
+	public String getAccountType() {
+		return accountType;
 	}
 
 	public ArrayList<Activity> getActivities() {
 		return activities;
 	}
 
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-
 	public Currency getBalance() {
 		return balance;
 	}
 
-	public void setBalance(Currency balance) {
-		this.balance = balance;
-	}
-
 	public double getInterest() {
 		return interest;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public void setBalance(Currency balance) {
+		this.balance = balance;
 	}
 
 	public void setInterest(double interest) {

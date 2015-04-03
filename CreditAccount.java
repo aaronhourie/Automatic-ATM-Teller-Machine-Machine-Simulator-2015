@@ -7,6 +7,10 @@ public class CreditAccount extends WithdrawableAccount {
 		this.creditLimit = new Currency(creditLimit);
 	}
 
+	/**
+	 * You cannot win.
+	 * @return Always returns false.
+	 **/
 	public boolean applyForIncrease() {
 		return false;
 	}

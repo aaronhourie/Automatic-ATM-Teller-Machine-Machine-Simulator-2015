@@ -5,6 +5,12 @@ public class User {
 	private String id;
 	private ArrayList<Account> accounts;
 	
+	/**
+	 * User objects are only constructed inside the User::login method.
+	 * All accounts found related to the User will be reconstructed
+	 * as the appropriate type of Account subclass.
+	 * @param id User's ID number, as stored in DB
+	 **/
 	public User(String id) {
 		this.id = id;
 		accounts = new ArrayList<Account>();
@@ -13,16 +19,20 @@ public class User {
 		Connection conn = DB.connect();
 
 		//If successful, populate the User Accounts
-		PreparedStatement pstmt;
+		PreparedStatement construct = null;
+		ResultSet rs = null;
 		if (conn != null) {
 			try {
 				String query = "SELECT * FROM Account WHERE owner=?";
-				pstmt = conn.prepareStatement(query);
-				pstmt.setString(1, id);
+				construct = conn.prepareStatement(query);
+				construct.setString(1, id);
 
-				ResultSet rs = pstmt.executeQuery();
+				//Gather all linked accounts
+				rs = construct.executeQuery();
 
+				//For every row returned, populate an account with the corresponding data
 				if (rs.next()) {
+					//If ResultSet not empty, at least one account must exist
 					do {
 						String accountNumber = rs.getString("account_number");
 						Currency balance = new Currency(rs.getInt("balance"));
@@ -32,6 +42,8 @@ public class User {
 						int surcharge = rs.getInt("surcharge");
 						int creditLimit = rs.getInt("credit_limit");
 						int numTransactions = rs.getInt("num_transactions");
+
+						//Determine account type and construct the new object as that type
 						String accountType;
 						switch (rs.getInt("type")) {
 							case 1: //Savings
@@ -48,19 +60,41 @@ public class User {
 								accounts.add(new CreditAccount(accountNumber, accountType, balance, interest, 
 														withdrawLimit, creditLimit));
 								break;
-							default: break;
+							default: //Something is wrong
+								break;
 						}
 					} while (rs.next());
 				}
 			} catch (SQLException se) {
+				System.out.println("Error while attemping to populate User object");
 				se.printStackTrace();
+			} finally {
+				try {
+					if (rs != null) {
+						rs.close();
+					}
+					if (construct != null) {
+						construct.close();
+					}
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException se2) {
+					System.out.println("Error while attempting to close MySQL objects");
+					se2.printStackTrace();
+				}
 			}
 		}
 	}
 
+	/**
+	 * Attempt to validate user by comparing supplied credentials
+	 * with those stored in the DB.
+	 * @return Fully populated User object, or NULL on fail
+	 **/
 	public static User login(String uname, String pword)
 	{
-		//If nothing supplied, auto-fail
+		//If no credentials supplied, auto-fail
 		if (uname == "" || pword == "") {
 			return null;
 		}
@@ -84,6 +118,7 @@ public class User {
 					pullAccount = new User(id);
 				}
 			} catch (SQLException se) {
+				System.out.println("Error while attempting to write to the database");
 				se.printStackTrace();
 			} finally {
 				try {
@@ -94,6 +129,8 @@ public class User {
 						conn.close();
 					}
 				} catch (SQLException se2) {
+					System.out.println("Error while attempting to close MySQL objects");
+					se2.printStackTrace();
 				}
 			}
 		}
@@ -109,6 +146,10 @@ public class User {
 		return accounts.get(index);
 	}
 
+	/**
+	 * @return All accounts as an Account[] array.
+	 * Accounts must be up-casted before using
+	 **/
 	public Account[] getAllAccounts() {
 		Account[] accArray = new Account[accounts.size()];
 		accArray = accounts.toArray(accArray);

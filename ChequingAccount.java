@@ -6,12 +6,6 @@ public class ChequingAccount extends WithdrawableAccount {
 	private int transactionLimit;
 	private int numTransactions;
 	private int surcharge;
-	
-	/** public Bill addBill(String name, String account, int payment)
-	 ** Creates a Bill object, stores it in the user's DB, and adds
-	 ** to open Bill arraylist.
-	 ** @return Bill object
-	 **/
 
 	public ChequingAccount(String accountNumber, String accountType, Currency balance,
 					double interest, int transactionLimit, int withdrawLimit, int surcharge,
@@ -23,6 +17,11 @@ public class ChequingAccount extends WithdrawableAccount {
 		bills = new ArrayList<Bill>();
 	}
 
+	/** 
+	 * Creates a Bill object, stores it in the user's DB, and adds
+	 * to open Bill arraylist.
+	 * @return Bill object
+	 **/
 	public Bill addBill(String name, String account, int payment) {
 		//Prep Bill object for return
 		Bill bill = null;
@@ -32,7 +31,6 @@ public class ChequingAccount extends WithdrawableAccount {
 
 		//On success, attempt to add bill to DB
 		if (conn != null) {
-
 			PreparedStatement add = null;
 			try {
 				//Set up query: payee_name, payee_account, payment, owner_account
@@ -48,11 +46,20 @@ public class ChequingAccount extends WithdrawableAccount {
 				//Add to current Bills
 				bill = new Bill(name, account, payment);
 			} catch (SQLException se) {
-				/**
-					REMOVE STRACK TRACE!
-				**/
+				System.out.println("Error while attempting to write Bill to database");
 				se.printStackTrace();
 			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+					if (add != null) {
+						add.close();
+					}
+				} catch (SQLException se2) {
+					System.out.println("Error while attempting to close MySQL objects");
+					se2.printStackTrace();
+				}
 			}
 		}
 		return bill;
@@ -89,6 +96,8 @@ public class ChequingAccount extends WithdrawableAccount {
 		}
 	}
 
+	/**
+	 * Not implemented as Bills were not used
 	public boolean payBill(int i) {
 		if (getBalance().getAmount() > bills.get(i).getRegularPayment().getAmount()) {
 			//pay bill?
@@ -96,8 +105,9 @@ public class ChequingAccount extends WithdrawableAccount {
 		}
 		return false;
 	}
+	 **/
 	
-	public Bill getBill(int n) {
-		return bills.get(n);
+	public Bill getBill(int index) {
+		return bills.get(index);
 	}
 }

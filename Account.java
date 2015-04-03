@@ -60,7 +60,7 @@ public abstract class Account {
 	 * transferTo account.
 	 * @return Returns true on transfer success
 	 **/
-	public boolean transfer(Account transferTo, double amount) {
+	public boolean transfer(String transferTo, double amount) {
 		//Convert amount argument to int, so it can be stored in DB
 		int balanceUpdate = Currency.parse(amount);
 		Currency amountForm = new Currency(balanceUpdate);

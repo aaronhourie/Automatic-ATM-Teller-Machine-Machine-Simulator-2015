@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class GUI_AccountOverview extends GUI_ViewPort{
 
+	private Account currentAccount;
 	private JPanel container;
 	private JTextArea display;
 	private JScrollPane activity;
@@ -14,36 +15,47 @@ public class GUI_AccountOverview extends GUI_ViewPort{
 	private JRadioButton[] options;
 	private int selected;
 	
-	public GUI_AccountOverview(String title, String u_id, GUI_Main ref) {
+	public GUI_AccountOverview(String title, String u_id, GUI_Main ref, Account currentAccount) {
 		super(title, u_id, ref);
+		
+		this.currentAccount = currentAccount;
 		
 		container = new JPanel();
 		display = new JTextArea(15, 30);
 		activity = new JScrollPane(display);
 		actions = new ButtonGroup();
-		withdraw = new JRadioButton("Withdraw");
 		deposit = new JRadioButton("Deposit");
 		transfer =  new JRadioButton("Transfer");
-		// sorry ;)
+		// sorry 
 		lbl_activity = new JLabel("Activity:                                                                                                ");
-		options = new JRadioButton[3];
+		
 		selected = 0;
 		
-		actions.add(withdraw);
+		if (!currentAccount.getAccountType().equals("Savings")){
+			
+			withdraw = new JRadioButton("Withdraw");
+			options = new JRadioButton[3];
+			actions.add(withdraw);
+			options[2] = withdraw;
+			container.add(withdraw);
+		}
+		else {
+			
+			options = new JRadioButton[2];
+		}
+		
 		actions.add(deposit);
 		actions.add(transfer);
 	
-		options[0] = withdraw;
-		options[1] = deposit;
-		options[2] = transfer;
+		options[0] = deposit;
+		options[1] = transfer;
 		
-		container.add(withdraw);
 		container.add(deposit);
 		container.add(transfer);
 		container.add(lbl_activity);
 		container.add(activity);
 		
-		withdraw.setSelected(true);
+		deposit.setSelected(true);
 		
 		add(container);
 	}
@@ -54,7 +66,7 @@ public class GUI_AccountOverview extends GUI_ViewPort{
 			// do nothing
 		}
 		else if(button.equals("BACK")){
-			// do nothing
+			back();
 		}
 		else if(button.equals("UP") ||button.equals("DOWN")){
 			// do nothing
@@ -103,6 +115,10 @@ public class GUI_AccountOverview extends GUI_ViewPort{
 			}
 		}
 		
+	}
+	public void back(){
+		
+		ref.changeViewPort(new GUI_UserOverview("User Overview:", "", ref));
 	}
 	
 }

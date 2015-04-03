@@ -6,6 +6,7 @@ class GUI_Main extends JFrame{
 	private GUI_ViewPort mainPanel;
 	private GUI_ButtonPad buttonPad;
 	private User currentUser;
+	private Account currentAccount;
 	private final int WINDOW_WIDTH = 900;
 	private final int WINDOW_HEIGHT = 400;
 

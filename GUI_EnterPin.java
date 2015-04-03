@@ -27,8 +27,8 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		container.add(lbl_pin);
 		container.add(pinInput);
 		// prevents editing with keyboard
-		userInput.setEditable(false);
-		pinInput.setEditable(false);
+		//userInput.setEditable(false);
+		//pinInput.setEditable(false);
 		// sets default field to write to
 		writeTo = userInput;
 		lbl_user.setForeground(Color.red);
@@ -69,11 +69,13 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		String userId = userInput.getText();
 		String pin = pinInput.getText();
 		
-		boolean success = User.login(userId, pin) == null;
+		User  currentUser = User.login(userId, pin);
 		
-		if (success) {
+		if (currentUser != null) {
 		
+			ref.setUser(currentUser);
 			ref.changeViewPort(new GUI_UserOverview("User Overview:", "", ref));
+			
 		}
 		else {
 			ref.changeViewPort(new GUI_EnterPin("Enter PIN:", "Error: Invalid username or PIN.", ref));

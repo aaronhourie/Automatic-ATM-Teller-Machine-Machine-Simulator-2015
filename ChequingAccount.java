@@ -58,11 +58,34 @@ public class ChequingAccount extends WithdrawableAccount {
 		return bill;
 	}
 
-	public void applySurcharge() {
-		if (numTransactions > transactionLimit) {
-			//apply surcharge?
-			//Update DB
-			//numTransactions--;
+	/**
+	 * Specialized for Chequing accounts, as they have
+	 * a surcharge after a max number of transactions
+	 * are completed.
+	 * @return Success of withdrawal action
+	 **/
+	public boolean withdraw(double amount) {
+		//Adds surcharge if necessary
+		amount += addSurcharge();
+
+		//Normal withdraw, only increase transactions on success
+		if (super.withdraw(amount)) {
+			numTransactions++;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if a surcharge is necessary
+	 * @return Returns surcharge or 0 if no surcharge required
+	 **/
+	public double addSurcharge() {
+		if (numTransactions >= transactionLimit) {
+			return surcharge;
+		} else {
+			return 0.0;
 		}
 	}
 
@@ -78,10 +101,3 @@ public class ChequingAccount extends WithdrawableAccount {
 		return bills.get(n);
 	}
 }
-
-/*
-Add Bill
-Remove Bill
-Update Bill
-Read Bill
-*/

@@ -1,20 +1,24 @@
 <h1>ROADMAP and STATUS</h1>
 
 <ol>
+	<li><h2>Bugs:</h2><ol>
+		<li>Currency displays, stores, or does something, incorrectly (in progress)</li>
+		</ol></li>
+
 	<li><h2>Main classes:</h2><ol>
 		<li>Currency<em>(90%)</em></li>
-		<li>User<em>(??%)</em></li>
+		<li>User<em>(80%)</em></li>
 		<li>Account<em>(90%)</em></li>
-		<li>SavingsAccount<em>(??%)</em></li>
-		<li>WithdrawableAccount<em>(??%)</em></li>
-		<li>ChequingAccount<em>(??%)</em></li>
+		<li><strike>SavingsAccount<em>(100%)</em></strike></li>
+		<li>WithdrawableAccount<em>(90%)</em></li>
+		<li>ChequingAccount<em>(90%)</em></li>
 		<li><strike>Bill<em>(100%)</em></strike></li>
-		<li>CreditAccount<em>(??%)</em></li>
+		<li>CreditAccount<em>(90%)</em></li>
 		<li><strike>Activity<em>(100%)</em></strike></li>
 	</ol></li>
 	
     <li><h2>Database - 142.167.136.228:3306</h2><ol>
-		<li>DB connectivity <em>(30%)</em>
+		<li>DB connectivity <em>(85%)</em>
 			<ol>
 				<li><strike>Transaction function</strike></li>
 				<li><strike>Get recent account activity</strike></li>
@@ -23,7 +27,7 @@
 				<li><strike>Populate account from DB</strike></li>
 				<li><strike>Deposit</strike></li>
 				<li><strike>Transfer</strike></li>
-				<li>Withdraw</li>
+				<li><strike>Withdraw</strike></li>
 				<li><strike>Login</strike></li>
 				<li>Logout</li>
 			</ol>

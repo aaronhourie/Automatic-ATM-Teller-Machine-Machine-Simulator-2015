@@ -70,7 +70,7 @@ public abstract class Account {
 		//Prevent negative values and values greater than account balance
 		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
 			//Prepare query for removal from origin account 
-			String query = "UPDATE Account SET balance=(balance + " + (-balanceUpdate) 
+			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
 						+ " ) WHERE account_number='" + getAccountNumber() + "'";
 			String details = "Transferred $" + amount + " to ACCO#" + transferTo;
 			
@@ -115,6 +115,7 @@ public abstract class Account {
 
 			PreparedStatement act = null;
 			PreparedStatement update = null;
+			PreparedStatement addTrans = null;
 			try {
 				//Disable autocommit to allow batch processing
 				conn.setAutoCommit(false);
@@ -122,6 +123,10 @@ public abstract class Account {
 				//Prepare query from base action
 				update = conn.prepareStatement(query);
 				
+				//Increase number of transactions
+				addTrans = conn.prepareStatement("UPDATE Account SET num_transactions=(num_transactions + 1) WHERE account_number=?");
+				addTrans.setString(1, accountNumber);
+
 				//Create Activity information
 				act = conn.prepareStatement("INSERT INTO Activity VALUES(?,?,?)");
 				act.setString(1, accountNumber);
@@ -134,6 +139,7 @@ public abstract class Account {
 				//Attempt DB push
 				act.executeUpdate();
 				update.executeUpdate();
+				addTrans.executeUpdate();
 				conn.commit();
 			} catch (SQLException se) {
 				/* 
@@ -204,21 +210,34 @@ public abstract class Account {
 	}
 	
 	// getters and setters.
+	public String getAccountType() {
+		return accountType;
+	}
+
 	public String getAccountNumber() {
 		return accountNumber;
 	}
+
+	public ArrayList<Activity> getActivities() {
+		return activities;
+	}
+
 	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
+
 	public Currency getBalance() {
 		return balance;
 	}
+
 	public void setBalance(Currency balance) {
 		this.balance = balance;
 	}
+
 	public double getInterest() {
 		return interest;
 	}
+
 	public void setInterest(double interest) {
 		this.interest = interest;
 	}

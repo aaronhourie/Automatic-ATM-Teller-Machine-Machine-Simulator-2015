@@ -234,6 +234,11 @@ public abstract class Account {
 		return interest;
 	}
 
+	public String getLastEvent() {
+		int last = activities.size() - 1;
+		return activities.get(last).getEvent();
+	}
+
 	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}

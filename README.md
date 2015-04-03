@@ -18,7 +18,7 @@
 	</ol></li>
 	
     <li><h2>Database - 142.167.136.228:3306</h2><ol>
-		<li>DB connectivity <em>(30%)</em>
+		<li>DB connectivity <em>(85%)</em>
 			<ol>
 				<li><strike>Transaction function</strike></li>
 				<li><strike>Get recent account activity</strike></li>

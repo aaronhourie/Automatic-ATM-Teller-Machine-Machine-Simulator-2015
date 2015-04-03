@@ -14,6 +14,7 @@ public abstract class WithdrawableAccount extends Account {
 	public boolean withdraw(double amount) {
 		//Convert amount argument to int, so it can be stored in DB
 		int balanceUpdate = Currency.parse(amount);
+		Currency amountForm = new Currency(balanceUpdate);
 
 		//Only allow if funds are available, and amount does not exceed withdraw limit
 		if (amount > 0 && getBalance().getAmount() >= amount
@@ -21,7 +22,7 @@ public abstract class WithdrawableAccount extends Account {
 			//Prepare query (PreparedStatement would require connection, so...)
 			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
 							+ " ) WHERE account_number='" + getAccountNumber() + "'";
-			String details = "Withdrew $" + amount;
+			String details = "Withdrew " + amountForm;
 
 			//Call transaction(), attempt to update DB, report on success
 			Activity action = transaction(query, details);

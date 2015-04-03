@@ -32,11 +32,12 @@ public abstract class Account {
 	public boolean deposit(double amount) {
 		//Convert amount argument to int, so it can be stored in DB
 		int balanceUpdate = Currency.parse(amount);
+		Currency amountForm = new Currency(balanceUpdate);
 
 		//Prepare query (PreparedStatement would require connection, so...)
 		String query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
 						+ " ) WHERE account_number='" + getAccountNumber() + "'";
-		String details = "Deposited $" + new Currency(balanceUpdate);
+		String details = "Deposited " + amountForm;
 
 		//Call transaction(), attempt to update DB, report on success
 		Activity action = transaction(query, details);
@@ -62,13 +63,14 @@ public abstract class Account {
 	public boolean transfer(Account transferTo, double amount) {
 		//Convert amount argument to int, so it can be stored in DB
 		int balanceUpdate = Currency.parse(amount);
+		Currency amountForm = new Currency(balanceUpdate);
 
 		//Prevent negative values and values greater than account balance
 		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
 			//Prepare query for removal from origin account 
 			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
 						+ " ) WHERE account_number='" + getAccountNumber() + "'";
-			String details = "Transferred $" + amount + " to ACCO#" + transferTo;
+			String details = "Transferred " + amountForm + " to ACCO#" + transferTo;
 			
 			//Call transaction(), attempt to update DB, report on success
 			Activity action = transaction(query, details);
@@ -80,7 +82,7 @@ public abstract class Account {
 				//Prepare query for addition to target account
 				query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
 							+ " ) WHERE account_number='" + getAccountNumber() + "'";
-				details = "Deposited $" + amount + " from ACCO#:" + getAccountNumber();
+				details = "Deposited " + amountForm + " from ACCO#:" + getAccountNumber();
 
 				//Push to DB, hope for the best!
 				transaction(query, details);

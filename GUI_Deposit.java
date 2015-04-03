@@ -52,7 +52,7 @@ public class GUI_Deposit extends GUI_AccountAccess {
 	public void type(String letter){
 		// types the number into the textfield
 		
-		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})");
+		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})|(\\.{2})|(\\.[0-9]*\\.)");
 		Matcher match = decimal.matcher(amountInput.getText() + letter);
 		
 		if (!match.find()){
@@ -63,7 +63,9 @@ public class GUI_Deposit extends GUI_AccountAccess {
 		// curr holds the current string info
 		String curr = amountInput.getText();
 		// cuts off the last letter
-		amountInput.setText(curr.substring(0, curr.length() - 1));
+		if (curr.length() > 0){
+			amountInput.setText(curr.substring(0, curr.length() - 1));
+		}
 	}
 	public void validate(){
 		

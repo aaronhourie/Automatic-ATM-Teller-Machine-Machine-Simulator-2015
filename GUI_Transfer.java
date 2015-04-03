@@ -64,7 +64,7 @@ public class GUI_Transfer extends GUI_AccountAccess {
 	public void type(String letter){
 		// types the number into the textfield
 		
-		Pattern decimal = Pattern.compile("\\.[0-9]{3}");
+		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})|(\\.{2})|(\\.[0-9]*\\.)");
 		Matcher match = decimal.matcher(writeTo.getText() + letter);
 		
 		if (!match.find()){
@@ -75,7 +75,9 @@ public class GUI_Transfer extends GUI_AccountAccess {
 		// curr holds the current string info
 		String curr = writeTo.getText();
 		// cuts off the last letter
-		writeTo.setText(curr.substring(0, curr.length() - 1));
+		if (curr.length() > 0){
+			writeTo.setText(curr.substring(0, curr.length() - 1));
+		}
 	}
 	public void validate(){
 		

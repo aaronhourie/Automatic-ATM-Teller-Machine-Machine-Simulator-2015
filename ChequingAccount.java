@@ -71,7 +71,7 @@ public class ChequingAccount extends WithdrawableAccount {
 	 **/
 	private double addSurcharge() {
 		if (numTransactions >= transactionLimit) {
-			return surcharge;
+			return surcharge / 100.00;
 		} else {
 			return 0.0;
 		}

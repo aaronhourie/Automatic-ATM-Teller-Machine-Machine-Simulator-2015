@@ -65,6 +65,9 @@ public abstract class Account {
 		int balanceUpdate = Currency.parse(amount);
 		Currency amountForm = new Currency(balanceUpdate);
 
+		//Prepare Activity for record-keeping
+		Activity action = null;
+
 		//Prevent negative values and values greater than account balance
 		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
 			//Prepare query for removal from origin account 
@@ -73,7 +76,7 @@ public abstract class Account {
 			String details = "Transferred " + amountForm + " to ACCO#" + transferTo;
 			
 			//Call transaction(), attempt to update DB, report on success
-			Activity action = transaction(query, details);
+			action = transaction(query, details);
 
 			//On success, update balance and deposit into target account
 			if (action.wasSuccessful()) {
@@ -81,15 +84,26 @@ public abstract class Account {
 
 				//Prepare query for addition to target account
 				query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
-							+ " ) WHERE account_number='" + getAccountNumber() + "'";
-				details = "Deposited " + amountForm + " from ACCO#:" + getAccountNumber();
+							+ " ) WHERE account_number='" + transferTo + "'";
+				details = "Received " + amountForm + " from ACCO#:" + getAccountNumber();
 
 				//Push to DB, hope for the best!
 				transaction(query, details);
 			} else {
 				action.setEvent("An error occurred; transfer was not completed");
 			}
+		} else {
+			String event = "Could not complete transfer; invalid input";
+			Date date = new Date();
+			Timestamp time = new Timestamp(date.getTime());
+
+			action = new Activity(getAccountNumber(), event, time);
+			getActivities().add(action);
+			return false;
 		}
+
+		//Return succeed and make record
+		activities.add(action);
 		return true;
 	}
 	

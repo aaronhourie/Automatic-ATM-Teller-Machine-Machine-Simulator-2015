@@ -1,3 +1,6 @@
+import java.sql.*;
+import java.util.Date;
+
 public abstract class WithdrawableAccount extends Account {
 	private Currency withdrawLimit;
 	
@@ -17,8 +20,8 @@ public abstract class WithdrawableAccount extends Account {
 		Currency amountForm = new Currency(balanceUpdate);
 
 		//Only allow if funds are available, and amount does not exceed withdraw limit
-		if (amount > 0 && getBalance().getAmount() >= amount
-				&& amount <= withdrawLimit.getAmount()) {
+		if (balanceUpdate > 0 && getBalance().getAmount() >= balanceUpdate
+				&& balanceUpdate <= withdrawLimit.getAmount()) {
 			//Prepare query (PreparedStatement would require connection, so...)
 			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
 							+ " ) WHERE account_number='" + getAccountNumber() + "'";
@@ -38,6 +41,12 @@ public abstract class WithdrawableAccount extends Account {
 			getActivities().add(action);
 			return action.wasSuccessful();
 		} else {
+			String event = "Could not complete withdrawal; invalid input";
+			Date date = new Date();
+			Timestamp time = new Timestamp(date.getTime());
+
+			Activity action = new Activity(getAccountNumber(), event, time);
+			getActivities().add(action);
 			return false;
 		}
 	}

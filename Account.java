@@ -36,7 +36,7 @@ public abstract class Account {
 		//Prepare query (PreparedStatement would require connection, so...)
 		String query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
 						+ " ) WHERE account_number='" + getAccountNumber() + "'";
-		String details = "Deposited $" + amount;
+		String details = "Deposited $" + new Currency(balanceUpdate);
 
 		//Call transaction(), attempt to update DB, report on success
 		Activity action = transaction(query, details);
@@ -187,7 +187,7 @@ public abstract class Account {
 				while (rs.next()) {
 					Date date = new Date(rs.getTimestamp("time").getTime());
 					SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
-					String event = rs.getString("details");
+					String event = rs.getString("details") + "\n";
 					recent += df.format(date) + " >> " + event;
 				}
 			} catch (SQLException se) {

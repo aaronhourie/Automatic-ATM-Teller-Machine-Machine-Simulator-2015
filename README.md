@@ -2,7 +2,7 @@
 
 <ol>
 	<li><h2>Bugs:</h2><ol>
-		<li>Currency displays, stores, or does something, incorrectly (in progress)</li>
+		<li><strike>Currency displays, stores, or does something, incorrectly (in progress)</strike></li>
 		</ol></li>
 
 	<li><h2>Main classes:</h2><ol>

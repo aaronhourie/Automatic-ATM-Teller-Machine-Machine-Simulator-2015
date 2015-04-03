@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GUI_Deposit extends GUI_ViewPort {
+public class GUI_Deposit extends GUI_AccountAccess {
 	
 	private JPanel container;
 	private JTextField amountInput;
@@ -12,8 +12,8 @@ public class GUI_Deposit extends GUI_ViewPort {
 	private Pattern decimal;
 	private Matcher match;
 
-	public GUI_Deposit(String title, String error, GUI_Main ref) {
-		super(title, error, ref);
+	public GUI_Deposit(String title, String error, GUI_Main ref,  Account currentAccount) {
+		super(title, error, ref, currentAccount);
 		// TODO Auto-generated constructor stub
 		
 		container = new JPanel();
@@ -35,12 +35,15 @@ public class GUI_Deposit extends GUI_ViewPort {
 			validate();
 		}
 		else if(button.equals("BACK")){
-			backSpace();
+			back();
 		}
 		else if(button.equals("UP") ||button.equals("DOWN")){
 		}
 		else if (button.equals("LEFT")||button.equals("RIGHT")){
 			// do nothing
+		}
+		else if (button.equals("DELETE")){
+			backSpace();
 		}
 		else {
 			type(button);
@@ -49,7 +52,7 @@ public class GUI_Deposit extends GUI_ViewPort {
 	public void type(String letter){
 		// types the number into the textfield
 		
-		Pattern decimal = Pattern.compile("\\.[0-9]{3}");
+		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})");
 		Matcher match = decimal.matcher(amountInput.getText() + letter);
 		
 		if (!match.find()){
@@ -67,15 +70,21 @@ public class GUI_Deposit extends GUI_ViewPort {
 		// This handles validation and changing panels.
 		// The value should be read from the pinInput as is.
 		
-		// TODO: pull from database here.
-		if (!amountInput.getText().equals("1234")) {
-		
-			ref.changeViewPort(new GUI_UserOverview("User Overview:", "", ref));
+		Double deposit = Double.parseDouble(amountInput.getText());
+		if (currentAccount.deposit(deposit)){
+			ref.changeViewPort(new GUI_Deposit("Deposit to"  + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
 		}
 		else {
-			ref.changeViewPort(new GUI_EnterPin("Enter PIN:", "Error: Invalid username or PIN.", ref));
+			// getLastEvent returns the appropriate error message to be displayed
+			ref.changeViewPort(new GUI_Deposit("Deposit to"  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));
 		}
 	}
 
+	public void back(){
+		
+		// return to account overview
+		ref.changeViewPort(new GUI_AccountOverview("Account Overview:", "", ref, currentAccount));
+		
+	}
 
 }

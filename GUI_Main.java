@@ -1,6 +1,9 @@
 import javax.swing.*;
-
 import java.awt.*;
+
+/* This class holds the main method, and extends the JFrame that holds all panels for the application.
+ * It uses a grid layout to place the ButtonPanel and whatever instance of ViewPort left and right.
+ */
 class GUI_Main extends JFrame{
 	
 	private GUI_ViewPort mainPanel;
@@ -30,9 +33,14 @@ class GUI_Main extends JFrame{
 		// does not allow resizing
 		setResizable(false);
 	}
+	
+	/* This is 
+	 * 
+	 */
 	private void buildPanels(){
 		
 		mainPanel = new GUI_EnterPin("Enter PIN:","", this);
+		//mainPanel = new GUI_AccountOverview("THIS IS A TEST", "TEST", this, new ChequingAccount("ACCOUNT", "ACCOUNT", null, 1.0, 10, 10, 10, 10));
 		mainPanel.setSize(WINDOW_WIDTH/2, WINDOW_HEIGHT);
 			
 		buttonPad = new GUI_ButtonPad(mainPanel);

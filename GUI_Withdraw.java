@@ -1,26 +1,40 @@
 import javax.swing.*;
+
 import java.awt.*;
 
-public class GUI_Withdraw extends GUI_ViewPort {
+public class GUI_Withdraw extends GUI_AccountAccess {
 	
-	private JPanel container;
+	private JPanel container, promptContainer, instructContainer, inputContainer;
 	private JTextField amountInput;
-	private JLabel lbl_prompt;
+	private JLabel lbl_prompt, lbl_instruct;
 	private int amount;
 	
-	public GUI_Withdraw(String title, String error, GUI_Main ref) {
-		super(title, error, ref);
+	public GUI_Withdraw(String title, String error, GUI_Main ref, Account currentAccount) {
+		super(title, error, ref, currentAccount);
 		// TODO Auto-generated constructor stub
 		
 		
 		container = new JPanel();
+		promptContainer = new JPanel();
+		instructContainer = new JPanel();
+		inputContainer = new JPanel();
 		amountInput = new JTextField(20);
-		lbl_prompt = new JLabel("Enter amount to withdraw:");
+		lbl_prompt = new JLabel("Enter amount to withdraw in multiples of $20:");
+		lbl_instruct = new JLabel("Use up and down to select amount.");
+		
+		amount = 0;
 		
 		amountInput.setText("$0.00");
+		// nesting layouts
+		container.setLayout(new BoxLayout(container, 1));
+		promptContainer.add(lbl_prompt);
+		instructContainer.add(lbl_instruct);
+		inputContainer.add(amountInput);
 		
-		container.add(lbl_prompt);
-		container.add(amountInput);
+		container.add(promptContainer);
+		container.add(instructContainer);
+		container.add(inputContainer);
+		
 		add(container);
 	}
 
@@ -30,13 +44,16 @@ public class GUI_Withdraw extends GUI_ViewPort {
 			validate();
 		}
 		else if(button.equals("BACK")){
-			// do nothing
+			back();
 		}
 		else if(button.equals("UP") ||button.equals("DOWN")){
 			scrollAmount(button);
 		}
 		else if (button.equals("LEFT")||button.equals("RIGHT")){
 			// do nothing
+		}
+		else if (button.equals("DELETE")){
+			clear();
 		}
 		else {
 			// do nothing
@@ -59,11 +76,30 @@ public class GUI_Withdraw extends GUI_ViewPort {
 		}
 		
 		amountInput.setText("$" + amount + ".00");
+	}
+	public void clear(){
 		
+		amount = 0;
+		amountInput.setText("$" + amount + ".00");
 	}
 	
 	public void validate(){
 		
+		double withdraw = (double)amount;
+		WithdrawableAccount withdrawFrom = (WithdrawableAccount)currentAccount;
 		
+		if (withdrawFrom.withdraw(withdraw)){
+			ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+		}
+		else {
+			// getLastEvent returns the appropriate error message to be displayed.
+			ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));	
+		}
+		
+	}
+	public void back(){
+		
+		// return to account overview
+		ref.changeViewPort(new GUI_AccountOverview("Account Overview:", "", ref, currentAccount));
 	}
 }

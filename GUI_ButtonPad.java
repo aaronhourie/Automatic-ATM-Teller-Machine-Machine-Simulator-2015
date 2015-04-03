@@ -31,7 +31,7 @@ public class GUI_ButtonPad extends JPanel{
 		// creates control buttons
 		buttons.add(new JButton("."));
 		buttons.add(new JButton("0"));
-		buttons.add(new JButton("#"));
+		buttons.add(new JButton("DELETE"));
 		buttons.add(new JButton("SELECT"));
 		buttons.add(new JButton("UP"));
 		buttons.add(new JButton("BACK"));

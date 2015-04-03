@@ -42,6 +42,9 @@ public class GUI_UserOverview extends GUI_ViewPort{
 		else if (button.equals("LEFT")||button.equals("RIGHT")){
 			// do nothing
 		}
+		else if (button.equals("DELETE")){
+			// do nothing
+		}
 		else {
 			// do nothing
 		}
@@ -58,11 +61,10 @@ public class GUI_UserOverview extends GUI_ViewPort{
 			
 			index ++;
 		}
-		System.out.println(index + ": " + accounts[index]);
 		accountList.setSelectedIndex(index);
 	}
 	public void select(){
-		
-		ref.changeViewPort(new GUI_AccountOverview("Account Overview:", "", ref, accounts[index]));
+		// passes a reference to the chosen account and sets the title to account number and balance.
+		ref.changeViewPort(new GUI_AccountOverview(accounts[index].toString(), "", ref, accounts[index]));
 	}
 }

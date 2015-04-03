@@ -9,6 +9,8 @@ public class GUI_EnterPin extends GUI_ViewPort{
 	private JTextField writeTo;
 	private JLabel lbl_pin;
 	private JLabel lbl_user;
+	private final Color FOCUS = Color.blue;
+	private final Color NORMAL = Color.black;
 	
 	public GUI_EnterPin(String title, String error, GUI_Main ref) {
 		
@@ -31,7 +33,7 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		//pinInput.setEditable(false);
 		// sets default field to write to
 		writeTo = userInput;
-		lbl_user.setForeground(Color.red);
+		lbl_user.setForeground(FOCUS);
 	}
 	public void buttonPress(String button){
 	
@@ -39,13 +41,16 @@ public class GUI_EnterPin extends GUI_ViewPort{
 			validate();
 		}
 		else if(button.equals("BACK")){
-			backSpace();
+			// do nothing
 		}
 		else if(button.equals("UP") ||button.equals("DOWN")){
 			changeFocus();
 		}
 		else if (button.equals("LEFT")||button.equals("RIGHT")){
 			// do nothing.
+		}
+		else if (button.equals("DELETE")){
+			backSpace();
 		}
 		else {
 			type(button);
@@ -84,13 +89,13 @@ public class GUI_EnterPin extends GUI_ViewPort{
 	public void changeFocus(){
 		// changes the focus of the "cursor" to the next field.
 		if (writeTo == userInput){
-			lbl_user.setForeground(Color.black);
-			lbl_pin.setForeground(Color.red); 
+			lbl_user.setForeground(NORMAL);
+			lbl_pin.setForeground(FOCUS); 
 			writeTo = pinInput;
 		}
 		else {
-			lbl_user.setForeground(Color.red);
-			lbl_pin.setForeground(Color.black); 
+			lbl_user.setForeground(FOCUS);
+			lbl_pin.setForeground(NORMAL); 
 			writeTo = userInput;
 		}
 	}

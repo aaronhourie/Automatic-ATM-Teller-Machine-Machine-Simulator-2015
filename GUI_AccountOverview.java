@@ -1,61 +1,66 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class GUI_AccountOverview extends GUI_ViewPort{
+public class GUI_AccountOverview extends GUI_AccountAccess{
 
-	private Account currentAccount;
-	private JPanel container;
+	private JPanel container, buttonContainer, infoContainer, promptContainer;
 	private JTextArea display;
 	private JScrollPane activity;
 	private ButtonGroup actions;
-	private JRadioButton withdraw;
-	private JRadioButton deposit;
-	private JRadioButton transfer; 
-	private JLabel lbl_activity;
+	private JLabel lbl_activity, lbl_info;
 	private JRadioButton[] options;
 	private int selected;
 	
-	public GUI_AccountOverview(String title, String u_id, GUI_Main ref, Account currentAccount) {
-		super(title, u_id, ref);
-		
-		this.currentAccount = currentAccount;
+	public GUI_AccountOverview(String title, String error, GUI_Main ref, Account currentAccount) {
+		super(title, error, ref, currentAccount);
 		
 		container = new JPanel();
+		buttonContainer = new JPanel();
+		infoContainer = new JPanel();
+		promptContainer = new JPanel();
 		display = new JTextArea(15, 30);
 		activity = new JScrollPane(display);
+		lbl_activity = new JLabel("Activity:");
+		lbl_info = new JLabel(currentAccount.getAccountType() + " account");
 		actions = new ButtonGroup();
-		deposit = new JRadioButton("Deposit");
-		transfer =  new JRadioButton("Transfer");
-		// sorry 
-		lbl_activity = new JLabel("Activity:                                                                                                ");
 		
-		selected = 0;
+		// setting recent activity
+		display.setText(currentAccount.getRecentActivity());
+		
+		// adding nested containers
+		infoContainer.add(lbl_info);
+		promptContainer.add(lbl_activity);
 		
 		if (!currentAccount.getAccountType().equals("Savings")){
-			
-			withdraw = new JRadioButton("Withdraw");
+			// adds all options for chequing and credit accounts
 			options = new JRadioButton[3];
-			actions.add(withdraw);
-			options[2] = withdraw;
-			container.add(withdraw);
+			options[0] = new JRadioButton("Withdraw");
+			options[1] = new JRadioButton("Transfer");
+			options[2] = new JRadioButton("Deposit");
 		}
 		else {
 			
 			options = new JRadioButton[2];
+			options[0] = new JRadioButton("Transfer");
+			options[1] = new JRadioButton("Deposit");
+		}
+		// sets first option as selected.
+		options[0].setSelected(true);
+		
+		// adds radios to necessary groups
+		for (int i=0; i < options.length; i++){
+			
+			actions.add(options[i]);
+			buttonContainer.add(options[i]);
 		}
 		
-		actions.add(deposit);
-		actions.add(transfer);
-	
-		options[0] = deposit;
-		options[1] = transfer;
-		
-		container.add(deposit);
-		container.add(transfer);
-		container.add(lbl_activity);
-		container.add(activity);
-		
-		deposit.setSelected(true);
+		promptContainer.add(activity);
+		// nesting layouts
+		container.setLayout(new BoxLayout(container, 1));
+		container.add(buttonContainer);
+		container.add(infoContainer);
+		container.add(promptContainer);
 		
 		add(container);
 	}
@@ -63,7 +68,7 @@ public class GUI_AccountOverview extends GUI_ViewPort{
 	public void buttonPress(String button){
 	
 		if (button.equals("SELECT")){
-			// do nothing
+			select();
 		}
 		else if(button.equals("BACK")){
 			back();
@@ -73,6 +78,9 @@ public class GUI_AccountOverview extends GUI_ViewPort{
 		}
 		else if (button.equals("LEFT")||button.equals("RIGHT")){
 			changeButton(button);
+		}
+		else if (button.equals("DELETE")){
+			// do nothing
 		}
 		else {
 			// do nothing
@@ -116,9 +124,21 @@ public class GUI_AccountOverview extends GUI_ViewPort{
 		}
 		
 	}
+	public void select(){
+		
+		if (options[selected].getText().equals("Withdraw")){
+			ref.changeViewPort(new GUI_Withdraw("Withdraw from "  + currentAccount + ":", "", ref, currentAccount));
+		}
+		else if (options[selected].getText().equals("Transfer")){
+			ref.changeViewPort(new GUI_Transfer("Transfer from " + currentAccount + ":", "", ref, currentAccount));
+		}
+		else {
+			ref.changeViewPort(new GUI_Deposit("Deposit to " + currentAccount + ":", "", ref, currentAccount));	
+		}
+	}
 	public void back(){
 		
+		// return to user overview
 		ref.changeViewPort(new GUI_UserOverview("User Overview:", "", ref));
 	}
-	
 }

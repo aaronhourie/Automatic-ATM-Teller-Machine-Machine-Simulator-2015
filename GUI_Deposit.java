@@ -52,11 +52,15 @@ public class GUI_Deposit extends GUI_AccountAccess {
 	public void type(String letter){
 		// types the number into the textfield
 		
-		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})|(\\.{2})|(\\.[0-9]*\\.)");
+		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})|(\\.{2})|(\\.[0-9]*\\.)|(^\\.)");
 		Matcher match = decimal.matcher(amountInput.getText() + letter);
 		
 		if (!match.find()){
 			amountInput.setText(amountInput.getText() + letter);
+			setError("");
+		}
+		else {
+			setError("Error: Invalid input!");
 		}
 	}
 	public void backSpace(){

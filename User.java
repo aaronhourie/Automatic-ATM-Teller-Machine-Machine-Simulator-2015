@@ -1,24 +1,13 @@
 import java.util.ArrayList;
 import java.sql.*;
 
-public class User 
-{
+public class User {
 	private String id;
 	private ArrayList<Account> accounts;
-	/*
-	private ArrayList<CreditAccount> creditAccounts; //Type 1
-	private ArrayList<SavingsAccount> savingsAccounts; //Type 2
-	private ArrayList<ChequingAccount> chequingAccounts; //Type 3
-	*/
 	
 	public User(String id) {
 		this.id = id;
 		accounts = new ArrayList<Account>();
-		/*
-		creditAccounts = new ArrayList<CreditAccount>();
-		savingsAccounts = new ArrayList<SavingsAccount>();
-		chequingAccounts = new ArrayList<ChequingAccount>();
-		*/
 
 		//Attempt DB connection
 		Connection conn = DB.connect();
@@ -49,27 +38,16 @@ public class User
 								accountType = "Savings";
 								accounts.add(new SavingsAccount(accountNumber, accountType, balance, interest));
 								break;
-								/*
-								savingsAccounts.add(new SavingsAccount(accountNumber, accountType, balance, interest));
-								*/
 							case 2: //Chequing
 								accountType = "Chequing";
 								accounts.add(new ChequingAccount(accountNumber, accountType, balance, interest, 
 														transactionLimit, withdrawLimit, surcharge, numTransactions));
 								break;
-								/*
-								chequingAccounts.add(new ChequingAccount(accountNumber, accountType, balance, interest, 
-														transactionLimit, withdrawLimit, surcharge, numTransactions));
-								*/
 							case 3: //Credit
 								accountType = "Credit";
 								accounts.add(new CreditAccount(accountNumber, accountType, balance, interest, 
 														withdrawLimit, creditLimit));
 								break;
-								/*
-								creditAccounts.add(new CreditAccount(accountNumber, accountType, balance, interest, 
-														withdrawLimit, creditLimit));
-								*/
 							default: break;
 						}
 					} while (rs.next());
@@ -127,20 +105,6 @@ public class User
 		return id;
 	}
 
-/*
-	public SavingsAccount getSavingsAccount(int index) {
-		return savingsAccounts.get(index);
-	}
-	
-	public ChequingAccount getChequingAccount(int index) {
-		return chequingAccounts.get(index);
-	}
-
-	public CreditAccount getCreditAccount(int index) {
-		return creditAccounts.get(index);
-	}
-*/
-
 	public Account getAccount(int index) {
 		return accounts.get(index);
 	}
@@ -150,23 +114,4 @@ public class User
 		accArray = accounts.toArray(accArray);
 		return accArray;
 	}
-/*
-	public SavingsAccount[] getAllSavings() {
-		SavingsAccount[] accArray = new SavingsAccount[savingsAccounts.size()];
-		accArray = savingsAccounts.toArray(accArray);
-		return accArray;
-	}
-
-	public ChequingAccount[] getAllChequing() {
-		ChequingAccount[] accArray = new ChequingAccount[chequingAccounts.size()];
-		accArray = chequingAccounts.toArray(accArray);
-		return accArray;
-	}
-
-	public CreditAccount[] getAllCredit() {
-		CreditAccount[] accArray = new CreditAccount[creditAccounts.size()];
-		accArray = creditAccounts.toArray(accArray);
-		return accArray;
-	}
-*/
 }

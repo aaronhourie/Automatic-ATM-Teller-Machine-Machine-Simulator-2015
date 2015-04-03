@@ -70,7 +70,7 @@ public abstract class Account {
 		//Prevent negative values and values greater than account balance
 		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
 			//Prepare query for removal from origin account 
-			String query = "UPDATE Account SET balance=(balance + " + (-balanceUpdate) 
+			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
 						+ " ) WHERE account_number='" + getAccountNumber() + "'";
 			String details = "Transferred $" + amount + " to ACCO#" + transferTo;
 			
@@ -204,21 +204,34 @@ public abstract class Account {
 	}
 	
 	// getters and setters.
+	public String getAccountType() {
+		return accountType;
+	}
+
 	public String getAccountNumber() {
 		return accountNumber;
 	}
+
+	public ArrayList<Activity> getActivities() {
+		return activities;
+	}
+
 	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
+
 	public Currency getBalance() {
 		return balance;
 	}
+
 	public void setBalance(Currency balance) {
 		this.balance = balance;
 	}
+
 	public double getInterest() {
 		return interest;
 	}
+
 	public void setInterest(double interest) {
 		this.interest = interest;
 	}

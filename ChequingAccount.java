@@ -78,10 +78,3 @@ public class ChequingAccount extends WithdrawableAccount {
 		return bills.get(n);
 	}
 }
-
-/*
-Add Bill
-Remove Bill
-Update Bill
-Read Bill
-*/

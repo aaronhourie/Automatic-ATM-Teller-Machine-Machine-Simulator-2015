@@ -4,7 +4,7 @@ public class Currency implements ICurrency
 
 	//To convert user input into storable values
 	public static int parse(double value) {
-		return (int)(value * 100);
+		return (int)(value * 100.00);
 	}
 
 	public Currency(int amount) 
@@ -17,11 +17,16 @@ public class Currency implements ICurrency
 		return amount;
 	}
 
-	@Override
-	public String toString()
-	{
-		int dollars = (int) (amount / 100);
-		int cents = amount % 100;
+	@Override //Converts amount into $12.34 format
+	public String toString() {
+		int dollars = (int) Math.floor(amount / 100);
+		int centStep = amount % 100;
+
+		//Deal with leading zeroes
+		String cents = String.valueOf(centStep);
+		if(centStep < 10) {
+			cents = "0" + cents;
+		}
 		
 		return "$" + dollars + "." + cents; 
 	}

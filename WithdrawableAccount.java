@@ -6,12 +6,37 @@ public abstract class WithdrawableAccount extends Account {
 		super(accountNumber, accountType, balance, interest);
 		this.withdrawLimit = withdrawLimit;
 	}
-	
-	public boolean withdraw(int n) {
-		if (getBalance().getAmount() > n) {
-			//withdraw
-			return true;
+
+	/**
+	 * Withdraw funds from account
+	 * @return Returns true if transaction completed successfully
+	 **/
+	public boolean withdraw(double amount) {
+		//Convert amount argument to int, so it can be stored in DB
+		int balanceUpdate = Currency.parse(amount);
+
+		//Only allow if funds are available
+		if (amount > 0 && getBalance().getAmount() >= amount) {
+			//Prepare query (PreparedStatement would require connection, so...)
+			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
+							+ " ) WHERE account_number='" + getAccountNumber() + "'";
+			String details = "Withdrew $" + amount;
+
+			//Call transaction(), attempt to update DB, report on success
+			Activity action = transaction(query, details);
+			
+			//On success, update balance
+			if (action.wasSuccessful()) {
+				getBalance().subtract(new Currency(balanceUpdate));
+			} else {
+				action.setEvent("An error occurred; no funds were withdrawn");
+			}
+
+			//Return succeed and make record
+			getActivities().add(action);
+			return action.wasSuccessful();
+		} else {
+			return false;
 		}
-		return false;
-	}
+	}	
 }

@@ -24,7 +24,7 @@ public abstract class WithdrawableAccount extends Account {
 		String details = "Withdrew " + amountForm;
 
 		//Call transaction(), attempt to update DB, report on success
-		Activity action = transaction(query, details);
+		Activity action = transaction(query, details, getAccountNumber());
 		
 		//On success, update balance
 		if (action.wasSuccessful()) {

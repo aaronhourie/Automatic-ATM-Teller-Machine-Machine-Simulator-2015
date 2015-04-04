@@ -40,7 +40,7 @@ public abstract class Account {
 		String details = "Deposited " + amountForm;
 
 		//Call transaction(), attempt to update DB, report on success
-		Activity action = transaction(query, details);
+		Activity action = transaction(query, details, accountNumber);
 		
 		//On success, update balance
 		if (action.wasSuccessful()) {
@@ -76,7 +76,7 @@ public abstract class Account {
 			String details = "Transferred " + amountForm + " to ACCO#" + transferTo;
 			
 			//Call transaction(), attempt to update DB, report on success
-			action = transaction(query, details);
+			action = transaction(query, details, accountNumber);
 
 			//On success, update balance and deposit into target account
 			if (action.wasSuccessful()) {
@@ -88,7 +88,7 @@ public abstract class Account {
 				details = "Received " + amountForm + " from ACCO#:" + getAccountNumber();
 
 				//Push to DB, hope for the best!
-				transaction(query, details);
+				transaction(query, details, transferTo);
 			} else {
 				action.setEvent("An error occurred; transfer was not completed");
 			}
@@ -110,10 +110,11 @@ public abstract class Account {
 	 /** 
 	  *	Should be called inside every transaction
 	  * to ensure all affected DB data is properly
-	  *	updated.
+	  *	updated. Requires accountNumber for non-source
+	  * transactions (ie transfers)
 	  *	@return Activity record of the transaction
 	  **/
-	public Activity transaction(String query, String details) {
+	public Activity transaction(String query, String details, String accountNumber) {
 		//Record time of transaction, prep Activity object
 		Date date = new Date();
 		Timestamp time = new Timestamp(date.getTime());

@@ -18,4 +18,16 @@ public class CreditAccount extends WithdrawableAccount {
 	public Currency getCreditLimit() {
 		return creditLimit;
 	}
+
+	public boolean withdraw(double amount) {
+		int balanceUpdate = Currency.parse(amount);
+
+		//Withdrawal amount must not push the account over the credit limit
+		if (balanceUpdate > 0 && -(getBalance().getAmount()) < creditLimit.getAmount()) {
+			return super.withdraw(balanceUpdate);
+		} else {
+			withdrawFail();
+			return false;
+		}
+	}
 }

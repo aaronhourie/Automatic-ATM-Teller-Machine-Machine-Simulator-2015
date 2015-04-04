@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.sql.*;
+import java.util.Date;
 
 public class ChequingAccount extends WithdrawableAccount {
 	private ArrayList<Bill> bills;
@@ -87,11 +88,22 @@ public class ChequingAccount extends WithdrawableAccount {
 		//Adds surcharge if necessary
 		amount += addSurcharge();
 
-		//Normal withdraw, only increase transactions on success
-		if (super.withdraw(amount)) {
-			numTransactions++;
-			return true;
+		//Convert amount argument to int, so it can be stored in DB
+		int balanceUpdate = Currency.parse(amount);
+
+		//Only allow if funds are available, and amount does not exceed withdraw limit
+		if (balanceUpdate > 0 && getBalance().getAmount() >= balanceUpdate
+				&& balanceUpdate <= getWithdrawLimit().getAmount()) {
+
+			//Normal withdraw, only increase transactions on success
+			if (super.withdraw(balanceUpdate)) {
+				numTransactions++;
+				return true;
+			} else {
+				return false;
+			}
 		} else {
+			withdrawFail();
 			return false;
 		}
 	}

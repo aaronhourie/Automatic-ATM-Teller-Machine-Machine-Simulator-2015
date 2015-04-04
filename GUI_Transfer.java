@@ -64,15 +64,17 @@ public class GUI_Transfer extends GUI_AccountAccess {
 	public void type(String letter){
 		// types the number into the textfield
 		
-		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})|(\\.{2})|(\\.[0-9]*\\.)|(^\\.)");
-		Matcher match = decimal.matcher(writeTo.getText() + letter);
-		
-		if (!match.find()){
-			writeTo.setText(writeTo.getText() + letter);
-			setError("");
-		} 
-		else {
-			setError("Error: Invalid input!");
+		if (writeTo == amountInput){
+			Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})|(\\.{2})|(\\.[0-9]*\\.)|(^\\.)");
+			Matcher match = decimal.matcher(writeTo.getText() + letter);
+			
+			if (!match.find()){
+				writeTo.setText(writeTo.getText() + letter);
+				setError("");
+			} 
+			else {
+				setError("Error: Invalid input!");
+			}
 		}
 	}
 	public void backSpace(){

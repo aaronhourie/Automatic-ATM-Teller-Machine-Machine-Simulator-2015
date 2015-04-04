@@ -1,6 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 
+/* The login panel. This panel inherits viewport.
+ * This panel calls static validation on the user to see if it can 
+ * create a proper user. It forwards to UserOverview.
+ */
+
 public class GUI_EnterPin extends GUI_ViewPort{
 
 	private JPanel container;
@@ -9,6 +14,7 @@ public class GUI_EnterPin extends GUI_ViewPort{
 	private JTextField writeTo;
 	private JLabel lbl_pin;
 	private JLabel lbl_user;
+	private String hiddenPin;
 	private final Color FOCUS = Color.blue;
 	private final Color NORMAL = Color.black;
 	
@@ -16,6 +22,7 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		
 		super(title, error, ref);
 		
+		hiddenPin = "";
 		container = new JPanel();
 		add(container, BorderLayout.CENTER);
 		
@@ -29,8 +36,8 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		container.add(lbl_pin);
 		container.add(pinInput);
 		// prevents editing with keyboard
-		//userInput.setEditable(false);
-		//pinInput.setEditable(false);
+		userInput.setEditable(false);
+		pinInput.setEditable(false);
 		// sets default field to write to
 		writeTo = userInput;
 		lbl_user.setForeground(FOCUS);
@@ -58,13 +65,29 @@ public class GUI_EnterPin extends GUI_ViewPort{
 	}
 	public void type(String letter){
 		// types the number into the textfield
-		writeTo.setText(writeTo.getText() + letter);
+		if (writeTo == pinInput){
+			// writes stars to shown, and value to hidden value
+			writeTo.setText(writeTo.getText() + "*");
+			hiddenPin += letter;
+		}
+		else {
+			writeTo.setText(writeTo.getText() + letter);
+		}
 	}
 	public void backSpace(){
 		// curr holds the current string info
 		String curr = writeTo.getText();
 		// cuts off the last letter
-		writeTo.setText(curr.substring(0, curr.length() - 1));
+		if (!curr.equals("")){
+			if (writeTo == pinInput){
+				// types to hidden pin value as well
+				writeTo.setText(curr.substring(0, curr.length() - 1));
+				hiddenPin = (hiddenPin.substring(0, hiddenPin.length() - 1));
+			}
+			else {
+				writeTo.setText(curr.substring(0, curr.length() - 1));
+			}
+		}
 	}
 	public void validate(){
 		
@@ -72,9 +95,8 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		// The value should be read from the pinInput as is.
 		
 		String userId = userInput.getText();
-		String pin = pinInput.getText();
-		
-		User  currentUser = User.login(userId, pin);
+	
+		User  currentUser = User.login(userId, hiddenPin);
 		
 		if (currentUser != null) {
 		

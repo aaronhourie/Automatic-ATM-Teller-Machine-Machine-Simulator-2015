@@ -33,7 +33,7 @@ public class GUI_UserOverview extends GUI_ViewPort{
 			select();
 		}
 		else if(button.equals("BACK")){
-			// do nothing
+			ref.logout();
 		}
 		else if(button.equals("UP") ||button.equals("DOWN")){
 			// scrolls account list
@@ -57,7 +57,7 @@ public class GUI_UserOverview extends GUI_ViewPort{
 			
 			index --;
 		}
-		else if (direction.equals("DOWN") && index < accounts.length) {
+		else if (direction.equals("DOWN") && index < accounts.length -1) {
 			
 			index ++;
 		}

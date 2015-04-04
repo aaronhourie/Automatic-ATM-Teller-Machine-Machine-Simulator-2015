@@ -26,7 +26,10 @@ class GUI_Main extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// divides the window in half
 		setLayout(new GridLayout(1,2));
-		buildPanels();
+		
+		mainPanel = new GUI_EnterPin("Enter PIN:","", this);	
+		buttonPad = new GUI_ButtonPad(mainPanel);
+		
 		add(mainPanel);
 		add(buttonPad);
 		setVisible(true);
@@ -34,18 +37,9 @@ class GUI_Main extends JFrame{
 		setResizable(false);
 	}
 	
-	/* This is 
-	 * 
+	/* This method gets called typically from a viewPort object, it removes both panels, changes the 
+	 * current viewport panel, and adds them back on. This keeps the buttonPanel from shifting positions.
 	 */
-	private void buildPanels(){
-		
-		mainPanel = new GUI_EnterPin("Enter PIN:","", this);
-		//mainPanel = new GUI_AccountOverview("THIS IS A TEST", "TEST", this, new ChequingAccount("ACCOUNT", "ACCOUNT", null, 1.0, 10, 10, 10, 10));
-		mainPanel.setSize(WINDOW_WIDTH/2, WINDOW_HEIGHT);
-			
-		buttonPad = new GUI_ButtonPad(mainPanel);
-		buttonPad.setSize(WINDOW_WIDTH/2, WINDOW_HEIGHT);
-	}
 	public void changeViewPort(GUI_ViewPort newView){
 		
 		// This is to ensure the panes do not swap positions.
@@ -62,6 +56,18 @@ class GUI_Main extends JFrame{
 		// cascades changes to buttonPad
 		buttonPad.changeViewPort(newView);
 	}
+	/* This method unlinks the current User object and returns the user to the
+	 * Enter pin screen.
+	 * Logout is cascaded into User by first calling the User.logout() method
+	 */
+	public void logout(){
+		
+		currentUser.logout();
+		currentUser = null;
+		changeViewPort(new GUI_EnterPin("Enter Pin:", "", this));
+	}
+	
+	// some stray getters and setters
 	public User getUser(){
 		return currentUser;
 	}

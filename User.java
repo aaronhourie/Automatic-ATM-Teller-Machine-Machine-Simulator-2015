@@ -59,7 +59,7 @@ public class User {
 							case 2: //Chequing
 								accountType = "Chequing";
 								accounts.add(new ChequingAccount(accountNumber, accountType, balance, interest, 
-														transactionLimit, withdrawLimit, surcharge, numTransactions));
+														withdrawLimit, transactionLimit, surcharge, numTransactions));
 								break;
 							case 3: //Credit
 								accountType = "Credit";

@@ -85,15 +85,31 @@ public class GUI_Withdraw extends GUI_AccountAccess {
 	
 	public void validate(){
 		
-		double withdraw = (double)amount;
-		WithdrawableAccount withdrawFrom = (WithdrawableAccount)currentAccount;
+		double withdrawAmount = (double)amount;
 		
-		if (withdrawFrom.withdraw(withdraw)){
-			ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+		if (currentAccount instanceof ChequingAccount){
+			
+			ChequingAccount withdrawFrom = (ChequingAccount)currentAccount;
+			
+			if (withdrawFrom.withdraw(withdrawAmount)){
+				ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+			}
+			else {
+				// getLastEvent returns the appropriate error message to be displayed.
+				ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));	
+			}
 		}
-		else {
-			// getLastEvent returns the appropriate error message to be displayed.
-			ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));	
+		else if(currentAccount instanceof CreditAccount) {
+			
+			CreditAccount withdrawFrom = (CreditAccount)currentAccount;
+			
+			if (withdrawFrom.withdraw(withdrawAmount)){
+				ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+			}
+			else {
+				// getLastEvent returns the appropriate error message to be displayed.
+				ref.changeViewPort(new GUI_Withdraw("Withdraw from"  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));	
+			}
 		}
 		
 	}

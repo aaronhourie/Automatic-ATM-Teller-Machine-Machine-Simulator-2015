@@ -109,13 +109,42 @@ public class GUI_Transfer extends GUI_AccountAccess {
 		double amount = Double.parseDouble(amountInput.getText());
 		String account = accountInput.getText();
 		
-		if (currentAccount.transfer(account, amount)){
-			ref.changeViewPort(new GUI_Transfer("Transfer from " + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+		// casting accounts
+		if (currentAccount instanceof ChequingAccount){
+		
+			ChequingAccount castAccount = (ChequingAccount)currentAccount;
+			if (castAccount.transfer(account, amount)){
+				ref.changeViewPort(new GUI_Transfer("Transfer from " + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+			}
+			else {
+				// getLastEvent returns the appropriate error message to be displayed
+				ref.changeViewPort(new GUI_Transfer("Transfer from "  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));
+			}
+		}
+		else if(currentAccount instanceof SavingsAccount){
+			
+			SavingsAccount castAccount = (SavingsAccount)currentAccount;
+			if (castAccount.transfer(account, amount)){
+				ref.changeViewPort(new GUI_Transfer("Transfer from " + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+			}
+			else {
+				// getLastEvent returns the appropriate error message to be displayed
+				ref.changeViewPort(new GUI_Transfer("Transfer from "  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));
+			}
 		}
 		else {
-			// getLastEvent returns the appropriate error message to be displayed
-			ref.changeViewPort(new GUI_Transfer("Transfer from "  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));
+			
+			CreditAccount castAccount = (CreditAccount)currentAccount;
+			if (castAccount.transfer(account, amount)){
+				ref.changeViewPort(new GUI_Transfer("Transfer from " + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
+			}
+			else {
+				// getLastEvent returns the appropriate error message to be displayed
+				ref.changeViewPort(new GUI_Transfer("Transfer from "  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));
+			}
 		}
+		
+		
 	}
 	
 	/* Changes the currently selected textfield for reading and writing.

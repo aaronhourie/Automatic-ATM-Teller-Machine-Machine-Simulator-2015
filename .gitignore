@@ -217,9 +217,3 @@ pip-log.txt
 .mr.developer.cfg
 
 *.class
-
-*.class
-
-*.jar
-
-DB.java

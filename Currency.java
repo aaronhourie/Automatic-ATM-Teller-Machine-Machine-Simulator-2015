@@ -15,7 +15,7 @@ public class Currency implements ICurrency
 	@Override //Converts amount into $12.34 format
 	public String toString() {
 		int dollars = (int) Math.floor(amount / 100);
-		int centStep = amount % 100;
+		int centStep = Math.abs(amount) % 100;
 
 		//Deal with leading zeroes
 		String cents = String.valueOf(centStep);

@@ -17,7 +17,7 @@ public class GUI_Logout extends GUI_ViewPort{
 		container = new JPanel();
 		container.setLayout(new BoxLayout(container, 1));
 		
-		display = new JLabel("  You have been logged out. A receipt has been printed. Have a nice day!");
+		display = new JLabel("  Logged out! A receipt has been printed. Press any key");
 		container.add(display);
 		
 		add(container);

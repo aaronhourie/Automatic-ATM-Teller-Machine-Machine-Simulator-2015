@@ -160,7 +160,7 @@ public class User {
 			//Write all activities
 			for (Account acc : accounts) {
 				for (Activity activ : acc.getActivities()) {
-					out.println(activ);
+					out.println(activ + "\n");
 				}
 			}
 			

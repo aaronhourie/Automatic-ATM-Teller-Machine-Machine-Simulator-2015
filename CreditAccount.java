@@ -19,6 +19,15 @@ public class CreditAccount extends WithdrawableAccount {
 		return creditLimit;
 	}
 
+	public boolean transfer(String transferTo, double amount) {
+		if ((Currency.parse(amount) - getBalance().getAmount()) >= creditLimit.getAmount()) {
+			failedActivity("Cannot transfer specified funds; check your balance");
+			return false;
+		} else {
+			return super.transfer(transferTo, amount);
+		}
+	}
+
 	public boolean withdraw(double amount) {
 		int balanceUpdate = Currency.parse(amount);
 

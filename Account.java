@@ -64,7 +64,7 @@ public abstract class Account {
 
 	/**
 	 * This method takes in an Account and transfers the amount in
-	 * a currency object from it's balance and sends it to the
+	 * a double from its balance and sends it to the
 	 * transferTo account.
 	 * @return Returns true on transfer success
 	 **/
@@ -76,79 +76,77 @@ public abstract class Account {
 		//Prepare Activity for record-keeping
 		Activity action = null;
 
-		//Prevent negative values and values greater than account balance
-		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
-			//Check if target account exists
+		//Prevent negative values and values greater than account balance,
+		//allow for Credit accounts
+		if (balanceUpdate > 0 && (balanceUpdate <= balance.getAmount() ||
+			accountType.equals("Credit"))) {
+			//Connect to database
 			Connection conn = DB.connect();
-			PreparedStatement accTest = null;
-			boolean targetExists = false;
-			try {
-				accTest = conn.prepareStatement("SELECT * FROM Account WHERE account_number=?");
-				accTest.setString(1, transferTo);
 
-				//If ResultSet is not empty, then account does indeed exist
-				ResultSet rs = accTest.executeQuery();
-				if (rs.next()) {
-					targetExists = true;
+			if (conn != null) {
+				//Check if target account exists
+				String testQuery = "SELECT * FROM Account WHERE account_number=?";
+				boolean targetExists = false;
+				try (PreparedStatement accTest = conn.prepareStatement(testQuery)) {
+					//Set query parameters
+					accTest.setString(1, transferTo);
+
+					//If ResultSet contains something, then account does indeed exist
+					try (ResultSet rs = accTest.executeQuery()) {
+						if (rs.next()) {
+							targetExists = true;
+						}
+					}
+				} catch (SQLException se) {
+					System.out.println("Error while checking target account");
+					se.printStackTrace();
 				}
 
-				//Terminate resultset
-				rs.close();
-			} catch (SQLException se) {
-				System.out.println("Error while checking target account");
-				se.printStackTrace();
-			} finally {
-				//Close all DB connections
+				//Close DB connection
 				try {
-					if (accTest != null) {
-						accTest.close();
+					conn.close();
+				} catch (SQLException se) { }
+
+				//If the target account checks out, attempt transactions
+				if (targetExists) {
+					//Prepare query for removal from origin account 
+					String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
+								+ " ) WHERE account_number='" + getAccountNumber() + "'";
+					String details = "Transferred " + amountForm + " to ACCO#" + transferTo;
+					
+					//Call transaction(), attempt to update DB, report on success
+					action = transaction(query, details, accountNumber);
+			
+
+					//On success, update balance and deposit into target account
+					if (action.wasSuccessful()) {
+						balance.subtract(new Currency(balanceUpdate));
+
+						//Prepare query for addition to target account
+						query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
+									+ " ) WHERE account_number='" + transferTo + "'";
+						details = "Received " + amountForm + " from ACCO#:" + getAccountNumber();
+
+						//Push to DB, hope for the best!
+						transaction(query, details, transferTo);
+					} else {
+						action.setEvent("An error occurred; possible connection error");
 					}
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException se2) {
-					System.out.println("Error while attempting to close MySQL objects");
-					se2.printStackTrace();
-				}
-			}
-
-			//If the target account checks out, attempt transactions
-			if (targetExists) {
-				//Prepare query for removal from origin account 
-				String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
-							+ " ) WHERE account_number='" + getAccountNumber() + "'";
-				String details = "Transferred " + amountForm + " to ACCO#" + transferTo;
-				
-				//Call transaction(), attempt to update DB, report on success
-				action = transaction(query, details, accountNumber);
-		
-
-				//On success, update balance and deposit into target account
-				if (action.wasSuccessful()) {
-					balance.subtract(new Currency(balanceUpdate));
-
-					//Prepare query for addition to target account
-					query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
-								+ " ) WHERE account_number='" + transferTo + "'";
-					details = "Received " + amountForm + " from ACCO#:" + getAccountNumber();
-
-					//Push to DB, hope for the best!
-					transaction(query, details, transferTo);
 				} else {
-					action.setEvent("An error occurred; possible connection error");
+					failedActivity("Could not complete transfer; target account doesn't exist");
+					return false;
 				}
 			} else {
-				failedActivity("Could not complete transfer; target account doesn't exist");
-				return false;
+				failedActivity("Transaction not completed, there was a connection error");
 			}
+
+			//Return success and make record
+			activities.add(action);
+			return true;
 		} else {
-			failedActivity("Could not complete transfer; invalid input");
+			failedActivity("Cannot transfer specified funds; check your balance");
 			return false;
 		}
-
-		//Return succeed and make record
-		activities.add(action);
-		return true;
 	}
 	
 	 /** 
@@ -164,60 +162,56 @@ public abstract class Account {
 		Timestamp time = new Timestamp(date.getTime());
 		Activity activity = null;
 
-		//Establish a DB connection
-		Connection conn = DB.connect();
+		//If no query was supplied, there is nothing to do!
+		if (query != null) {
+			//Establish a DB connection
+			Connection conn = DB.connect();
 
-		//On success, attempt to update the account
-		if (conn != null && query != null) {
-
-			PreparedStatement act = null;
-			PreparedStatement update = null;
-			PreparedStatement addTrans = null;
-			try {
-				//Disable autocommit to allow batch processing
-				conn.setAutoCommit(false);
-
-				//Prepare query from base action
-				update = conn.prepareStatement(query);
-				
+			if (conn != null) {
 				//Increase number of transactions
-				addTrans = conn.prepareStatement("UPDATE Account SET num_transactions=(num_transactions + 1) WHERE account_number=?");
-				addTrans.setString(1, accountNumber);
+				String transup = "UPDATE Account SET num_transactions=(num_transactions + 1) WHERE account_number=?";
+				//Create activity information
+				String actinfo = "INSERT INTO Activity VALUES(?,?,?)";
 
-				//Create Activity information
-				act = conn.prepareStatement("INSERT INTO Activity VALUES(?,?,?)");
-				act.setString(1, accountNumber);
-				act.setString(2, details);
-				act.setTimestamp(3, time);
+				//Update database
+				try (PreparedStatement act = conn.prepareStatement(actinfo);
+					PreparedStatement update = conn.prepareStatement(query);
+					PreparedStatement addTrans = conn.prepareStatement(transup)) {
+						//Disable autocommit to allow batch processing
+						conn.setAutoCommit(false);
+						
+						//Increase number of transactions
+						addTrans.setString(1, accountNumber);
 
-				//Set Activity object for return
-				activity = new Activity(accountNumber, details, time);
-				
-				//Attempt mega DB push
-				act.executeUpdate();
-				update.executeUpdate();
-				addTrans.executeUpdate();
-				conn.commit();
-			} catch (SQLException se) {
-				System.out.println("Error while attempting to write to database");
-				se.printStackTrace();
-				activity = new Activity(accountNumber, null, time);
-			} finally {
-				try {
-					if (act != null) {
-						act.close();
-					}
-					if (update != null) {
-						update.close();
-					}
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException se2) {
-					System.out.println("Error while attempting to close MySQL objects");
-					se2.printStackTrace();
+						//Create Activity information
+						act.setString(1, accountNumber);
+						act.setString(2, details);
+						act.setTimestamp(3, time);
+
+						//Set Activity object for return
+						activity = new Activity(accountNumber, details, time);
+						
+						//Attempt mega DB push
+						act.executeUpdate();
+						update.executeUpdate();
+						addTrans.executeUpdate();
+						conn.commit();
+				} catch (SQLException se) {
+					System.out.println("Error while attempting to write to database");
+					se.printStackTrace();
+					activity = new Activity(accountNumber, null, time);
 				}
+
+				//Close DB connection
+				try {
+					conn.close();
+				} catch (SQLException se) {	}
+			} else {
+				activity = new Activity(accountNumber, null, time);
 			}
+		} else {
+			//Fail on no query
+			activity = new Activity(accountNumber, null, time);
 		}
 		return activity;
 	}
@@ -235,40 +229,39 @@ public abstract class Account {
 		Connection conn = DB.connect();
 
 		//On success, poll for recent activity
-		PreparedStatement getAct = null;
+		String recentQuery = "SELECT * FROM Activity WHERE owner_account=? ORDER BY time DESC LIMIT 5";
 		if (conn != null) {
-			try {
+			try (PreparedStatement getAct = conn.prepareStatement(recentQuery)) {
 				//Query returns five most recent activities
-				String sql = "SELECT * FROM Activity WHERE owner_account=? ORDER BY time DESC LIMIT 5";
-				getAct = conn.prepareStatement(sql);
 				getAct.setString(1, accountNumber);
-				ResultSet rs = getAct.executeQuery();
 
 				//Format and add all results to return string
-				while (rs.next()) {
-					Date date = new Date(rs.getTimestamp("time").getTime());
-					SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
-					String event = rs.getString("details") + "\n";
-					recent += df.format(date) + " >> " + event;
-				}
-			} catch (SQLException se) {
-				System.out.println("Error while attempting to write to database");
-				se.printStackTrace();
-				recent = "Error: could not retrieve recent activity";
-			} finally {
-				try {
-					if (getAct != null) {
-						getAct.close();
-					}
-					if (conn != null) {
-						conn.close();
+				try (ResultSet rs = getAct.executeQuery()) {
+					while (rs.next()) {
+						Date date = new Date(rs.getTimestamp("time").getTime());
+						SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
+						String event = rs.getString("details") + "\n";
+						recent += df.format(date) + " >> " + event;
 					}
 				} catch (SQLException se2) {
-					System.out.println("Error while attempting to close MySQL objects");
+					System.out.println("ResultSet was buggered");
 					se2.printStackTrace();
+					recent = "Error: could not retrieve recent activity";
 				}
+			} catch (SQLException se) {
+				System.out.println("Error while attempting to read from database");
+				se.printStackTrace();
+				recent = "Error: could not retrieve recent activity";
 			}
+
+			//Close DB connection
+			try {
+				conn.close();
+			} catch (SQLException se) { } 
+		} else {
+			recent = "Could not retrieve recent activity: there was a connection error";
 		}
+
 		return recent;
 	}
 	

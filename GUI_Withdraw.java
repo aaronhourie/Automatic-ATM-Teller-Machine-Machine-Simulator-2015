@@ -1,7 +1,9 @@
 import javax.swing.*;
 
 import java.awt.*;
-
+/* This panel handles the withdrawing functionality, and ties into
+ * WithdrawableAccount().withdraw();
+ */
 public class GUI_Withdraw extends GUI_AccountAccess {
 	
 	private JPanel container, promptContainer, instructContainer, inputContainer;
@@ -12,7 +14,6 @@ public class GUI_Withdraw extends GUI_AccountAccess {
 	public GUI_Withdraw(String title, String error, GUI_Main ref, Account currentAccount) {
 		super(title, error, ref, currentAccount);
 		// TODO Auto-generated constructor stub
-		
 		
 		container = new JPanel();
 		promptContainer = new JPanel();
@@ -37,11 +38,13 @@ public class GUI_Withdraw extends GUI_AccountAccess {
 		
 		add(container);
 	}
-
+	
+	/* Implementing the API.
+	 */
 	public void buttonPress(String button){
 		
 		if (button.equals("SELECT")){
-			validate();
+			validateInput();
 		}
 		else if(button.equals("BACK")){
 			back();
@@ -60,6 +63,10 @@ public class GUI_Withdraw extends GUI_AccountAccess {
 		}
 	}
 	
+	/* This creates the scrolling behavior for withdrawing amounts.
+	 * Since the ATM may only withdraw denominations of $20, this scrolls
+	 * the amount.
+	 */
 	public void scrollAmount(String direction){
 		
 		if (direction.equals("UP")){
@@ -77,13 +84,18 @@ public class GUI_Withdraw extends GUI_AccountAccess {
 		
 		amountInput.setText("$" + amount + ".00");
 	}
+	
+	/* This clears the amount that has been inputted.
+	 */
 	public void clear(){
 		
 		amount = 0;
 		amountInput.setText("$" + amount + ".00");
 	}
-	
-	public void validate(){
+	/* This hooks into the WithdrawableAccount() withdraw functionality.
+	 * The implementations of the children classes vary, this method handles both options.
+	 */
+	public void validateInput(){
 		
 		double withdrawAmount = (double)amount;
 		
@@ -113,6 +125,9 @@ public class GUI_Withdraw extends GUI_AccountAccess {
 		}
 		
 	}
+	
+	/* This returns the user to account overview.
+	 */
 	public void back(){
 		
 		// return to account overview

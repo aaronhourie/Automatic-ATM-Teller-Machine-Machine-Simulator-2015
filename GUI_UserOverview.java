@@ -1,6 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 
+/* GUI_Overview shows all accounts belonging to a user, and lets the user
+ * navigate to the account they wish to use.
+ * Backing out of this panel causes the user to log out.
+ */
 public class GUI_UserOverview extends GUI_ViewPort{
 
 	private JPanel container;
@@ -12,8 +16,9 @@ public class GUI_UserOverview extends GUI_ViewPort{
 	public GUI_UserOverview(String title, String u_id, GUI_Main ref) {
 		super(title, u_id, ref);
 		
+		// gets accounts from user
 		accounts = ref.getUser().getAllAccounts();
-		
+		// sets scroll index to top.
 		index = 0;
 		container = new JPanel();
 		container.setLayout(new GridLayout(1, 2));
@@ -27,6 +32,8 @@ public class GUI_UserOverview extends GUI_ViewPort{
 		add(container);
 	}
 
+	/* Implementing the API.
+	 */
 	public void buttonPress(String button){
 	
 		if (button.equals("SELECT")){
@@ -49,6 +56,9 @@ public class GUI_UserOverview extends GUI_ViewPort{
 			// do nothing
 		}
 	}
+	
+	/* Provides scrolling functionality to the list of accounts.
+	 */
 	public void scroll(String direction){
 		
 		// either adds or subtracts to the variable index, then
@@ -61,8 +71,12 @@ public class GUI_UserOverview extends GUI_ViewPort{
 			
 			index ++;
 		}
+		// move "cursor"
 		accountList.setSelectedIndex(index);
 	}
+	
+	/* This moves the user to the currently selected account.
+	 */
 	public void select(){
 		// passes a reference to the chosen account and sets the title to account number and balance.
 		ref.changeViewPort(new GUI_AccountOverview(accounts[index].toString(), "", ref, accounts[index]));

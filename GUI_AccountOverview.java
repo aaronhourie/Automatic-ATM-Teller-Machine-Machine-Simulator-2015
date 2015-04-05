@@ -1,5 +1,10 @@
 import javax.swing.*;
 
+/* This class controls the options for each individual account.
+ * It displays activity, and two or three options for actions
+ * depending on the account type.
+ */
+
 public class GUI_AccountOverview extends GUI_AccountAccess{
 
 	private JPanel container, buttonContainer, infoContainer, promptContainer;
@@ -20,6 +25,7 @@ public class GUI_AccountOverview extends GUI_AccountAccess{
 		display = new JTextArea(15, 30);
 		activity = new JScrollPane(display);
 		lbl_activity = new JLabel("Activity:");
+		// displays the type of account
 		lbl_info = new JLabel(currentAccount.getAccountType() + " account");
 		actions = new ButtonGroup();
 		
@@ -38,7 +44,7 @@ public class GUI_AccountOverview extends GUI_AccountAccess{
 			options[2] = new JRadioButton("Deposit");
 		}
 		else {
-			
+			// options for savings (no withdraw)
 			options = new JRadioButton[2];
 			options[0] = new JRadioButton("Transfer");
 			options[1] = new JRadioButton("Deposit");
@@ -62,7 +68,9 @@ public class GUI_AccountOverview extends GUI_AccountAccess{
 		
 		add(container);
 	}
-
+	
+	/* Implementing the API.
+	 */
 	public void buttonPress(String button){
 	
 		if (button.equals("SELECT")){
@@ -85,6 +93,8 @@ public class GUI_AccountOverview extends GUI_AccountAccess{
 		}
 	}
 	
+	/* This method changes the focus of the button using the button pad.
+	 */
 	public void changeButton(String direction){
 		
 		if (direction.equals("RIGHT")){
@@ -122,6 +132,9 @@ public class GUI_AccountOverview extends GUI_AccountAccess{
 		}
 		
 	}
+	/* Decides what panel to move to based on which radio
+	 * is selected.
+	 */
 	public void select(){
 		
 		if (options[selected].getText().equals("Withdraw")){
@@ -134,6 +147,10 @@ public class GUI_AccountOverview extends GUI_AccountAccess{
 			ref.changeViewPort(new GUI_Deposit("Deposit to " + currentAccount + ":", "", ref, currentAccount));	
 		}
 	}
+	
+	/* Returns user to user overview
+	 * 
+	 */	
 	public void back(){
 		
 		// return to user overview

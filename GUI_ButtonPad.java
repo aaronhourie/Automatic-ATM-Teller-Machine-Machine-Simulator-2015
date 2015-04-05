@@ -2,6 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+
+/* The button pad class contains the event listeners for all actions in the ATM.
+ * This also holds a reference to the currently active window, and sends a buttonPress()
+ * method call with a string containing the name of the button that was pressed.
+ */
+
 public class GUI_ButtonPad extends JPanel{
 
 	private GUI_ViewPort viewPort;
@@ -40,16 +46,22 @@ public class GUI_ButtonPad extends JPanel{
 		buttons.add(new JButton("RIGHT"));
 		
 		for (int i=0; i < NUM_BUTTONS; i++){
-			
+			// adding event listeners
 			buttons.get(i).addActionListener(new ButtonListener());
 			add(buttons.get(i));	
 		}
 	}
-	
+	/* This gets called on by the GUI_Main class when the viewport changes.
+	 * 
+	 */
 	public void changeViewPort(GUI_ViewPort viewPort){
 	
 		this.viewPort = viewPort;
 	}
+	
+	/* This action listener sends the button string to the current viewport.
+	 * 
+	 */
 	public class ButtonListener implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e){

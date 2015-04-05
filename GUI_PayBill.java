@@ -1,6 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 
+/* This was never implemented.
+ * 
+ */
+
 public class GUI_PayBill extends GUI_ViewPort{
 
 	public GUI_PayBill(String title, String error, GUI_Main ref) {

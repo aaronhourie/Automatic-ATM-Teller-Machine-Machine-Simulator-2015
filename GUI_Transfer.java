@@ -2,7 +2,8 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.util.regex.*;
-
+/* This class handles transfers between accounts.
+ */
 public class GUI_Transfer extends GUI_AccountAccess {
 
 	private JPanel container;
@@ -40,10 +41,12 @@ public class GUI_Transfer extends GUI_AccountAccess {
 		
 	}
 	
+	/* Implementing the API.
+	 */
 	public void buttonPress(String button){
 		
 		if (button.equals("SELECT")){
-			validate();
+			validateInput();
 		}
 		else if(button.equals("BACK")){
 			back();
@@ -61,6 +64,10 @@ public class GUI_Transfer extends GUI_AccountAccess {
 			type(button);
 		}
 	}
+	
+	/* This method handles typing and uses a regular expression to prevent typing 
+	 * invalid values.
+	 */
 	public void type(String letter){
 		// types the number into the textfield
 		
@@ -81,6 +88,9 @@ public class GUI_Transfer extends GUI_AccountAccess {
 			writeTo.setText(writeTo.getText() + letter);
 		}
 	}
+	
+	/* Deletes the last letter in the currently focused field
+	 */
 	public void backSpace(){
 		// curr holds the current string info
 		String curr = writeTo.getText();
@@ -89,10 +99,12 @@ public class GUI_Transfer extends GUI_AccountAccess {
 			writeTo.setText(curr.substring(0, curr.length() - 1));
 		}
 	}
-	public void validate(){
-		
-		// This handles validation and changing panels.
-		// The value should be read from the pinInput as is.
+	
+	/* This handles validation and changing panels.
+	 * Hooks into Account.transfer() for validation.
+	 * Returns user to transfer on success or failure with according messages.
+	 */
+	public void validateInput(){
 		
 		double amount = Double.parseDouble(amountInput.getText());
 		String account = accountInput.getText();
@@ -105,6 +117,9 @@ public class GUI_Transfer extends GUI_AccountAccess {
 			ref.changeViewPort(new GUI_Transfer("Transfer from "  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));
 		}
 	}
+	
+	/* Changes the currently selected textfield for reading and writing.
+	 */
 	public void changeFocus(){
 		// changes the focus of the "cursor" to the next field.
 		if (writeTo == amountInput){
@@ -118,6 +133,8 @@ public class GUI_Transfer extends GUI_AccountAccess {
 			writeTo = amountInput;
 		}
 	}
+	/* Returns user to account overview
+	 */
 	public void back(){
 		
 		// return to account overview

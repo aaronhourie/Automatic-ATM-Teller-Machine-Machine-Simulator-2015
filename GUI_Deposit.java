@@ -4,6 +4,9 @@ import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/* This panel deals with deposits and has a reference to the current account being operated on.
+ */
+
 public class GUI_Deposit extends GUI_AccountAccess {
 	
 	private JPanel container;
@@ -29,10 +32,12 @@ public class GUI_Deposit extends GUI_AccountAccess {
 		amountInput.setEditable(false);
 	}
 
+	/* Implementing the API.
+	 */
 	public void buttonPress(String button){
 		
 		if (button.equals("SELECT")){
-			validate();
+			validateInput();
 		}
 		else if(button.equals("BACK")){
 			back();
@@ -49,34 +54,47 @@ public class GUI_Deposit extends GUI_AccountAccess {
 			type(button);
 		}
 	}
+	
+	/* This method handles typing and uses a regular expression to prevent typing 
+	 * invalid values.
+	 */
 	public void type(String letter){
 		// types the number into the textfield
-		
+		// pattern that matches a lot of invalid cases.
 		Pattern decimal = Pattern.compile("([0-9]{9}(\\.|))|(\\.[0-9]{3})|(\\.{2})|(\\.[0-9]*\\.)|(^\\.)");
 		Matcher match = decimal.matcher(amountInput.getText() + letter);
 		
 		if (!match.find()){
+			// if no error is found, start typing.
 			amountInput.setText(amountInput.getText() + letter);
+			// reset the error message.
 			setError("");
 		}
 		else {
+			// set the error message
 			setError("Error: Invalid input!");
 		}
 	}
+	/* Deletes the last letter in the currently focused field
+	 */
 	public void backSpace(){
 		// curr holds the current string info
 		String curr = amountInput.getText();
-		// cuts off the last letter
+		// cuts off the last letter if string is not empty
 		if (curr.length() > 0){
 			amountInput.setText(curr.substring(0, curr.length() - 1));
 		}
 	}
-	public void validate(){
+	
+	/* This method hooks into the Account class's deposit validation
+	 * functionality. 
+	 */
+	public void validateInput(){
 		
-		// This handles validation and changing panels.
-		// The value should be read from the pinInput as is.
-		
+		// grabs deposit amount from text field
 		Double deposit = Double.parseDouble(amountInput.getText());
+		
+		// attempts to deposit
 		if (currentAccount.deposit(deposit)){
 			ref.changeViewPort(new GUI_Deposit("Deposit to"  + currentAccount + ":", "SUCCESS!", ref, currentAccount));	
 		}
@@ -85,7 +103,9 @@ public class GUI_Deposit extends GUI_AccountAccess {
 			ref.changeViewPort(new GUI_Deposit("Deposit to"  + currentAccount + ":", currentAccount.getLastEvent(), ref, currentAccount));
 		}
 	}
-
+	
+	/* Returns user to account overview
+	 */
 	public void back(){
 		
 		// return to account overview

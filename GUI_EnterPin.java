@@ -42,10 +42,12 @@ public class GUI_EnterPin extends GUI_ViewPort{
 		writeTo = userInput;
 		lbl_user.setForeground(FOCUS);
 	}
+	/* Implementing the API.
+	 */
 	public void buttonPress(String button){
 	
 		if (button.equals("SELECT")){
-			validate();
+			validateInput();
 		}
 		else if(button.equals("BACK")){
 			// do nothing
@@ -63,6 +65,11 @@ public class GUI_EnterPin extends GUI_ViewPort{
 			type(button);
 		}
 	}
+	
+	/* This method types values into the currently focused field.
+	 * If the field is pinInput, it hides it by writing stars to the
+	 * textfield and the actual value to a string.
+	 */
 	public void type(String letter){
 		// types the number into the textfield
 		if (writeTo == pinInput){
@@ -71,9 +78,14 @@ public class GUI_EnterPin extends GUI_ViewPort{
 			hiddenPin += letter;
 		}
 		else {
+			// regular typing behaviour
 			writeTo.setText(writeTo.getText() + letter);
 		}
 	}
+	
+	/* Backspace erases the last letter in the focused field.
+	 * Synchronizes the hidden string if it is pinInput.
+	 */
 	public void backSpace(){
 		// curr holds the current string info
 		String curr = writeTo.getText();
@@ -89,10 +101,12 @@ public class GUI_EnterPin extends GUI_ViewPort{
 			}
 		}
 	}
-	public void validate(){
-		
-		// This handles validation and changing panels.
-		// The value should be read from the pinInput as is.
+	
+	/* This method handles validation and changing panels.
+	 * The value should be read from the pinInput as is.
+	 * This ties into users static method login.
+	 */
+	public void validateInput(){
 		
 		String userId = userInput.getText();
 	
@@ -108,6 +122,9 @@ public class GUI_EnterPin extends GUI_ViewPort{
 			ref.changeViewPort(new GUI_EnterPin("Enter PIN:", "Error: Invalid username or PIN.", ref));
 		}
 	}
+	
+	/* This changes the field to be written to.
+	 */
 	public void changeFocus(){
 		// changes the focus of the "cursor" to the next field.
 		if (writeTo == userInput){

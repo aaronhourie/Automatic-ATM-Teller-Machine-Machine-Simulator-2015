@@ -55,6 +55,14 @@ public abstract class Account {
 	}
 
 	/**
+	 * Streamlines failed transactions
+	 **/
+	public void failedActivity(String event) {
+		Timestamp time = new Timestamp(new Date().getTime());
+		activities.add(new Activity(accountNumber, event, time));
+	}
+
+	/**
 	 * This method takes in an Account and transfers the amount in
 	 * a currency object from it's balance and sends it to the
 	 * transferTo account.
@@ -70,35 +78,71 @@ public abstract class Account {
 
 		//Prevent negative values and values greater than account balance
 		if (balanceUpdate > 0 && balanceUpdate <= balance.getAmount()) {
-			//Prepare query for removal from origin account 
-			String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
-						+ " ) WHERE account_number='" + getAccountNumber() + "'";
-			String details = "Transferred " + amountForm + " to ACCO#" + transferTo;
-			
-			//Call transaction(), attempt to update DB, report on success
-			action = transaction(query, details, accountNumber);
+			//Check if target account exists
+			Connection conn = DB.connect();
+			PreparedStatement accTest = null;
+			boolean targetExists = false;
+			try {
+				accTest = conn.prepareStatement("SELECT * FROM Account WHERE account_number=?");
+				accTest.setString(1, transferTo);
 
-			//On success, update balance and deposit into target account
-			if (action.wasSuccessful()) {
-				balance.subtract(new Currency(balanceUpdate));
+				//If ResultSet is not empty, then account does indeed exist
+				ResultSet rs = accTest.executeQuery();
+				if (rs.next()) {
+					targetExists = true;
+				}
 
-				//Prepare query for addition to target account
-				query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
-							+ " ) WHERE account_number='" + transferTo + "'";
-				details = "Received " + amountForm + " from ACCO#:" + getAccountNumber();
+				//Terminate resultset
+				rs.close();
+			} catch (SQLException se) {
+				System.out.println("Error while checking target account");
+				se.printStackTrace();
+			} finally {
+				//Close all DB connections
+				try {
+					if (accTest != null) {
+						accTest.close();
+					}
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException se2) {
+					System.out.println("Error while attempting to close MySQL objects");
+					se2.printStackTrace();
+				}
+			}
 
-				//Push to DB, hope for the best!
-				transaction(query, details, transferTo);
+			//If the target account checks out, attempt transactions
+			if (targetExists) {
+				//Prepare query for removal from origin account 
+				String query = "UPDATE Account SET balance=(balance - " + balanceUpdate
+							+ " ) WHERE account_number='" + getAccountNumber() + "'";
+				String details = "Transferred " + amountForm + " to ACCO#" + transferTo;
+				
+				//Call transaction(), attempt to update DB, report on success
+				action = transaction(query, details, accountNumber);
+		
+
+				//On success, update balance and deposit into target account
+				if (action.wasSuccessful()) {
+					balance.subtract(new Currency(balanceUpdate));
+
+					//Prepare query for addition to target account
+					query = "UPDATE Account SET balance=(balance + " + balanceUpdate 
+								+ " ) WHERE account_number='" + transferTo + "'";
+					details = "Received " + amountForm + " from ACCO#:" + getAccountNumber();
+
+					//Push to DB, hope for the best!
+					transaction(query, details, transferTo);
+				} else {
+					action.setEvent("An error occurred; possible connection error");
+				}
 			} else {
-				action.setEvent("An error occurred; transfer was not completed");
+				failedActivity("Could not complete transfer; target account doesn't exist");
+				return false;
 			}
 		} else {
-			String event = "Could not complete transfer; invalid input";
-			Date date = new Date();
-			Timestamp time = new Timestamp(date.getTime());
-
-			action = new Activity(getAccountNumber(), event, time);
-			getActivities().add(action);
+			failedActivity("Could not complete transfer; invalid input");
 			return false;
 		}
 

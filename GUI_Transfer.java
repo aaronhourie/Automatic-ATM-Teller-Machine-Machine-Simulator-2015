@@ -76,6 +76,10 @@ public class GUI_Transfer extends GUI_AccountAccess {
 				setError("Error: Invalid input!");
 			}
 		}
+		else {
+			
+			writeTo.setText(writeTo.getText() + letter);
+		}
 	}
 	public void backSpace(){
 		// curr holds the current string info

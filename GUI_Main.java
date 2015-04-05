@@ -64,7 +64,7 @@ class GUI_Main extends JFrame{
 		
 		currentUser.logout();
 		currentUser = null;
-		changeViewPort(new GUI_EnterPin("Enter Pin:", "", this));
+		changeViewPort(new GUI_Logout("", "", this));
 	}
 	
 	// some stray getters and setters

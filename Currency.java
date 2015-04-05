@@ -23,7 +23,11 @@ public class Currency implements ICurrency
 			cents = "0" + cents;
 		}
 		
-		return "$" + dollars + "." + cents; 
+		if (dollars < 0) {
+			return "-$" + Math.abs(dollars) + "." + cents;
+		} else {
+			return "$" + dollars + "." + cents; 
+		}
 	}
 
 	@Override
